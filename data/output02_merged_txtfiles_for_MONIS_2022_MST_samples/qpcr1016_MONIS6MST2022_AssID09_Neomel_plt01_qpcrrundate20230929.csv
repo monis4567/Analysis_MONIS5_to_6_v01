@@ -1,0 +1,97 @@
+Well	Well Name	Well Type	Replicate	Threshold (dRn)	Ct (dRn)	Quantity (copies)	RSq (dRn)	Slope (dRn)	
+A1	01_std1E5_3uL_  Qty or ID	Standard	1	0.0407	22.18	3.00e+005	0.863	-3.372	
+A2	01_std1E5_3uL_  Qty or ID	Standard	1	0.0407	24.37	3.00e+005	0.863	-3.372	
+A3	01_std1E5_3uL_  Qty or ID	Standard	1	0.0407	23.91	3.00e+005	0.863	-3.372	
+B1	02_std1E4_3uL_  Qty or ID	Standard	2	0.0407	26.79	3.00e+004	0.863	-3.372	
+B2	02_std1E4_3uL_  Qty or ID	Standard	2	0.0407	26.94	3.00e+004	0.863	-3.372	
+B3	02_std1E4_3uL_  Qty or ID	Standard	2	0.0407	26.21	3.00e+004	0.863	-3.372	
+C1	03_std1E3_3uL_  Qty or ID	Standard	3	0.0407	28.60	3.00e+003	0.863	-3.372	
+C2	03_std1E3_3uL_  Qty or ID	Standard	3	0.0407	32.55	3.00e+003	0.863	-3.372	
+C3	03_std1E3_3uL_  Qty or ID	Standard	3	0.0407	34.32	3.00e+003	0.863	-3.372	
+D1	04_std1E2_3uL_  Qty or ID	Standard	4	0.0407	36.49	3.00e+002	0.863	-3.372	
+D2	04_std1E2_3uL_  Qty or ID	Standard	4	0.0407	33.61	3.00e+002	0.863	-3.372	
+D3	04_std1E2_3uL_  Qty or ID	Standard	4	0.0407	32.87	3.00e+002	0.863	-3.372	
+E1	05_std1E1_3uL_  Qty or ID	Standard	5	0.0407	34.75	3.00e+001	0.863	-3.372	
+E2	05_std1E1_3uL_  Qty or ID	Standard	5	0.0407	38.82	3.00e+001	0.863	-3.372	
+E3	05_std1E1_3uL_  Qty or ID	Standard	5	0.0407	42.46	3.00e+001	0.863	-3.372	
+F1	06_std1E0_3uL_  Qty or ID	Standard	6	0.0407	No Ct	No Ct	0.863	-3.372	
+F2	06_std1E0_3uL_  Qty or ID	Standard	6	0.0407	40.30	3.00e+000	0.863	-3.372	
+F3	06_std1E0_3uL_  Qty or ID	Standard	6	0.0407	36.99	3.00e+000	0.863	-3.372	
+G1	07_std1E-1_3uL_  Qty or ID	Standard	7	0.0407	No Ct	No Ct	0.863	-3.372	
+G2	07_std1E-1_3uL_  Qty or ID	Standard	7	0.0407	No Ct	No Ct	0.863	-3.372	
+G3	07_std1E-1_3uL_  Qty or ID	Standard	7	0.0407	No Ct	No Ct	0.863	-3.372	
+H1	08_std1ENTC_3uL_  Qty or ID	NTC	8	0.0407	No Ct	No Ct	0.863	-3.372	
+H2	08_std1ENTC_3uL_  Qty or ID	NTC	8	0.0407	No Ct	No Ct	0.863	-3.372	
+H3	08_std1ENTC_3uL_  Qty or ID	NTC	8	0.0407	No Ct	No Ct	0.863	-3.372	
+A4	09_MST-566 _26_02 _3uL_  Qty or ID	Unknown	9	0.0407	No Ct	No Ct	0.863	-3.372	
+A5	09_MST-566 _26_02 _3uL_  Qty or ID	Unknown	9	0.0407	No Ct	No Ct	0.863	-3.372	
+A6	09_MST-566 _26_02 _3uL_  Qty or ID	Unknown	9	0.0407	No Ct	No Ct	0.863	-3.372	
+B4	10_MST-2021-012 _26_04 _3uL_  Qty or ID	Unknown	10	0.0407	No Ct	No Ct	0.863	-3.372	
+B5	10_MST-2021-012 _26_04 _3uL_  Qty or ID	Unknown	10	0.0407	No Ct	No Ct	0.863	-3.372	
+B6	10_MST-2021-012 _26_04 _3uL_  Qty or ID	Unknown	10	0.0407	No Ct	No Ct	0.863	-3.372	
+C4	11_MST-2021-019 _26_06 _3uL_  Qty or ID	Unknown	11	0.0407	No Ct	No Ct	0.863	-3.372	
+C5	11_MST-2021-019 _26_06 _3uL_  Qty or ID	Unknown	11	0.0407	No Ct	No Ct	0.863	-3.372	
+C6	11_MST-2021-019 _26_06 _3uL_  Qty or ID	Unknown	11	0.0407	No Ct	No Ct	0.863	-3.372	
+D4	12_MST-2022-050 _26_07 _3uL_  Qty or ID	Unknown	12	0.0407	No Ct	No Ct	0.863	-3.372	
+D5	12_MST-2022-050 _26_07 _3uL_  Qty or ID	Unknown	12	0.0407	No Ct	No Ct	0.863	-3.372	
+D6	12_MST-2022-050 _26_07 _3uL_  Qty or ID	Unknown	12	0.0407	No Ct	No Ct	0.863	-3.372	
+E4	13_MST-2021-005 _26_09 _3uL_  Qty or ID	Unknown	13	0.0407	31.94	1.283e+003	0.863	-3.372	
+E5	13_MST-2021-005 _26_09 _3uL_  Qty or ID	Unknown	13	0.0407	40.05	5.07	0.863	-3.372	
+E6	13_MST-2021-005 _26_09 _3uL_  Qty or ID	Unknown	13	0.0407	36.01	8.020e+001	0.863	-3.372	
+F4	14_MST-011 _26_11 _3uL_  Qty or ID	Unknown	14	0.0407	No Ct	No Ct	0.863	-3.372	
+F5	14_MST-011 _26_11 _3uL_  Qty or ID	Unknown	14	0.0407	No Ct	No Ct	0.863	-3.372	
+F6	14_MST-011 _26_11 _3uL_  Qty or ID	Unknown	14	0.0407	No Ct	No Ct	0.863	-3.372	
+G4	15_MST-2022-076 _26_15 _3uL_  Qty or ID	Unknown	15	0.0407	No Ct	No Ct	0.863	-3.372	
+G5	15_MST-2022-076 _26_15 _3uL_  Qty or ID	Unknown	15	0.0407	No Ct	No Ct	0.863	-3.372	
+G6	15_MST-2022-076 _26_15 _3uL_  Qty or ID	Unknown	15	0.0407	No Ct	No Ct	0.863	-3.372	
+H4	16_MST-2021-098 _26_17 _3uL_  Qty or ID	Unknown	16	0.0407	No Ct	No Ct	0.863	-3.372	
+H5	16_MST-2021-098 _26_17 _3uL_  Qty or ID	Unknown	16	0.0407	No Ct	No Ct	0.863	-3.372	
+H6	16_MST-2021-098 _26_17 _3uL_  Qty or ID	Unknown	16	0.0407	No Ct	No Ct	0.863	-3.372	
+A7	17_MST-2021-011 _26_19 _3uL_  Qty or ID	Unknown	17	0.0407	No Ct	No Ct	0.863	-3.372	
+A8	17_MST-2021-011 _26_19 _3uL_  Qty or ID	Unknown	17	0.0407	No Ct	No Ct	0.863	-3.372	
+A9	17_MST-2021-011 _26_19 _3uL_  Qty or ID	Unknown	17	0.0407	No Ct	No Ct	0.863	-3.372	
+B7	18_MST-2021-021_26_14_3uL_  Qty or ID	Unknown	18	0.0407	40.98	2.69	0.863	-3.372	
+B8	18_MST-2021-021_26_14_3uL_  Qty or ID	Unknown	18	0.0407	39.82	5.95	0.863	-3.372	
+B9	18_MST-2021-021_26_14_3uL_  Qty or ID	Unknown	18	0.0407	No Ct	No Ct	0.863	-3.372	
+C7	19_MST-2021-014_26_03_3uL_  Qty or ID	Unknown	19	0.0407	No Ct	No Ct	0.863	-3.372	
+C8	19_MST-2021-014_26_03_3uL_  Qty or ID	Unknown	19	0.0407	No Ct	No Ct	0.863	-3.372	
+C9	19_MST-2021-014_26_03_3uL_  Qty or ID	Unknown	19	0.0407	No Ct	No Ct	0.863	-3.372	
+D7	20_MST-2021-023 _26_26 _3uL_  Qty or ID	Unknown	20	0.0407	No Ct	No Ct	0.863	-3.372	
+D8	20_MST-2021-023 _26_26 _3uL_  Qty or ID	Unknown	20	0.0407	No Ct	No Ct	0.863	-3.372	
+D9	20_MST-2021-023 _26_26 _3uL_  Qty or ID	Unknown	20	0.0407	No Ct	No Ct	0.863	-3.372	
+E7	21_MST-2021-016_26_08_3uL_  Qty or ID	Unknown	21	0.0407	No Ct	No Ct	0.863	-3.372	
+E8	21_MST-2021-016_26_08_3uL_  Qty or ID	Unknown	21	0.0407	No Ct	No Ct	0.863	-3.372	
+E9	21_MST-2021-016_26_08_3uL_  Qty or ID	Unknown	21	0.0407	No Ct	No Ct	0.863	-3.372	
+F7	22_MST-2022-042 _27_02 _3uL_  Qty or ID	Unknown	22	0.0407	No Ct	No Ct	0.863	-3.372	
+F8	22_MST-2022-042 _27_02 _3uL_  Qty or ID	Unknown	22	0.0407	No Ct	No Ct	0.863	-3.372	
+F9	22_MST-2022-042 _27_02 _3uL_  Qty or ID	Unknown	22	0.0407	No Ct	No Ct	0.863	-3.372	
+G7	23_MST-2022-047 _27_04 _3uL_  Qty or ID	Unknown	23	0.0407	41.94	1.40	0.863	-3.372	
+G8	23_MST-2022-047 _27_04 _3uL_  Qty or ID	Unknown	23	0.0407	39.89	5.66	0.863	-3.372	
+G9	23_MST-2022-047 _27_04 _3uL_  Qty or ID	Unknown	23	0.0407	39.08	9.84	0.863	-3.372	
+H7	24_MST-2021-002 _27_05 _3uL_  Qty or ID	Unknown	24	0.0407	No Ct	No Ct	0.863	-3.372	
+H8	24_MST-2021-002 _27_05 _3uL_  Qty or ID	Unknown	24	0.0407	No Ct	No Ct	0.863	-3.372	
+H9	24_MST-2021-002 _27_05 _3uL_  Qty or ID	Unknown	24	0.0407	No Ct	No Ct	0.863	-3.372	
+A10	25_MST-2021-003 _27_06 _3uL_  Qty or ID	Unknown	25	0.0407	No Ct	No Ct	0.863	-3.372	
+A11	25_MST-2021-003 _27_06 _3uL_  Qty or ID	Unknown	25	0.0407	No Ct	No Ct	0.863	-3.372	
+A12	25_MST-2021-003 _27_06 _3uL_  Qty or ID	Unknown	25	0.0407	No Ct	No Ct	0.863	-3.372	
+B10	26_MST-2021-006 _27_07 _3uL_  Qty or ID	Unknown	26	0.0407	No Ct	No Ct	0.863	-3.372	
+B11	26_MST-2021-006 _27_07 _3uL_  Qty or ID	Unknown	26	0.0407	No Ct	No Ct	0.863	-3.372	
+B12	26_MST-2021-006 _27_07 _3uL_  Qty or ID	Unknown	26	0.0407	No Ct	No Ct	0.863	-3.372	
+C10	27_MST-2021-007 _27_09 _3uL_  Qty or ID	Unknown	27	0.0407	No Ct	No Ct	0.863	-3.372	
+C11	27_MST-2021-007 _27_09 _3uL_  Qty or ID	Unknown	27	0.0407	No Ct	No Ct	0.863	-3.372	
+C12	27_MST-2021-007 _27_09 _3uL_  Qty or ID	Unknown	27	0.0407	No Ct	No Ct	0.863	-3.372	
+D10	28_MST-2021-028_27_21_3uL_  Qty or ID	Unknown	28	0.0407	No Ct	No Ct	0.863	-3.372	
+D11	28_MST-2021-028_27_21_3uL_  Qty or ID	Unknown	28	0.0407	No Ct	No Ct	0.863	-3.372	
+D12	28_MST-2021-028_27_21_3uL_  Qty or ID	Unknown	28	0.0407	No Ct	No Ct	0.863	-3.372	
+E10	29_MST-2022-055 _27_12 _3uL_  Qty or ID	Unknown	29	0.0407	No Ct	No Ct	0.863	-3.372	
+E11	29_MST-2022-055 _27_12 _3uL_  Qty or ID	Unknown	29	0.0407	No Ct	No Ct	0.863	-3.372	
+E12	29_MST-2022-055 _27_12 _3uL_  Qty or ID	Unknown	29	0.0407	No Ct	No Ct	0.863	-3.372	
+F10	30_MST-2021-013 _27_15 _3uL_  Qty or ID	Unknown	30	0.0407	No Ct	No Ct	0.863	-3.372	
+F11	30_MST-2021-013 _27_15 _3uL_  Qty or ID	Unknown	30	0.0407	No Ct	No Ct	0.863	-3.372	
+F12	30_MST-2021-013 _27_15 _3uL_  Qty or ID	Unknown	30	0.0407	No Ct	No Ct	0.863	-3.372	
+G10	31_MST-2022-054 _27_16 _3uL_  Qty or ID	Unknown	31	0.0407	No Ct	No Ct	0.863	-3.372	
+G11	31_MST-2022-054 _27_16 _3uL_  Qty or ID	Unknown	31	0.0407	No Ct	No Ct	0.863	-3.372	
+G12	31_MST-2022-054 _27_16 _3uL_  Qty or ID	Unknown	31	0.0407	No Ct	No Ct	0.863	-3.372	
+H10	32_MST-442 _27_24 _3uL_  Qty or ID	Unknown	32	0.0407	No Ct	No Ct	0.863	-3.372	
+H11	32_MST-442 _27_24 _3uL_  Qty or ID	Unknown	32	0.0407	No Ct	No Ct	0.863	-3.372	
+H12	32_MST-442 _27_24 _3uL_  Qty or ID	Unknown	32	0.0407	No Ct	No Ct	0.863	-3.372	

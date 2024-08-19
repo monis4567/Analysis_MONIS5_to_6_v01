@@ -1,0 +1,61 @@
+Well	Well Name	Well Type	Replicate	Threshold (dRn)	Ct (dRn)	Quantity (copies)	RSq (dRn)	Slope (dRn)	
+A1	01_std1E6_5uL_  Qty or ID	Standard	1	0.0500	17.36	5.00e+006	0.995	-3.545	
+A2	01_std1E6_5uL_  Qty or ID	Standard	1	0.0500	17.71	5.00e+006	0.995	-3.545	
+A3	01_std1E6_5uL_  Qty or ID	Standard	1	0.0500	18.06	5.00e+006	0.995	-3.545	
+B1	02_std1E5_5uL_  Qty or ID	Standard	2	0.0500	21.16	5.00e+005	0.995	-3.545	
+B2	02_std1E5_5uL_  Qty or ID	Standard	2	0.0500	20.97	5.00e+005	0.995	-3.545	
+B3	02_std1E5_5uL_  Qty or ID	Standard	2	0.0500	21.90	5.00e+005	0.995	-3.545	
+C1	03_std1E4_5uL_  Qty or ID	Standard	3	0.0500	25.19	5.00e+004	0.995	-3.545	
+C2	03_std1E4_5uL_  Qty or ID	Standard	3	0.0500	24.27	5.00e+004	0.995	-3.545	
+C3	03_std1E4_5uL_  Qty or ID	Standard	3	0.0500	24.89	5.00e+004	0.995	-3.545	
+D1	04_std1E3_5uL_  Qty or ID	Standard	4	0.0500	27.75	5.00e+003	0.995	-3.545	
+D2	04_std1E3_5uL_  Qty or ID	Standard	4	0.0500	28.35	5.00e+003	0.995	-3.545	
+D3	04_std1E3_5uL_  Qty or ID	Standard	4	0.0500	28.46	5.00e+003	0.995	-3.545	
+E1	05_std1E2_5uL_  Qty or ID	Standard	5	0.0500	31.73	5.00e+002	0.995	-3.545	
+E2	05_std1E2_5uL_  Qty or ID	Standard	5	0.0500	31.99	5.00e+002	0.995	-3.545	
+E3	05_std1E2_5uL_  Qty or ID	Standard	5	0.0500	31.40	5.00e+002	0.995	-3.545	
+F1	06_std1E1_5uL_  Qty or ID	Standard	6	0.0500	34.32	5.00e+001	0.995	-3.545	
+F2	06_std1E1_5uL_  Qty or ID	Standard	6	0.0500	35.78	5.00e+001	0.995	-3.545	
+F3	06_std1E1_5uL_  Qty or ID	Standard	6	0.0500	36.59	5.00e+001	0.995	-3.545	
+G1	07_std1E0_5uL_  Qty or ID	Standard	7	0.0500	39.27	5.00e+000	0.995	-3.545	
+G2	07_std1E0_5uL_  Qty or ID	Standard	7	0.0500	39.17	5.00e+000	0.995	-3.545	
+G3	07_std1E0_5uL_  Qty or ID	Standard	7	0.0500	38.58	5.00e+000	0.995	-3.545	
+H1	08_std1ENTC_5uL_  Qty or ID	NTC	8	0.0500	No Ct	No Ct	0.995	-3.545	
+H2	08_std1ENTC_5uL_  Qty or ID	NTC	8	0.0500	No Ct	No Ct	0.995	-3.545	
+H3	08_std1ENTC_5uL_  Qty or ID	NTC	8	0.0500	No Ct	No Ct	0.995	-3.545	
+A4	09_MST235_5uL_  Qty or ID	Unknown	9	0.0500	No Ct	No Ct	0.995	-3.545	
+A5	09_MST235_5uL_  Qty or ID	Unknown	9	0.0500	No Ct	No Ct	0.995	-3.545	
+A6	09_MST235_5uL_  Qty or ID	Unknown	9	0.0500	No Ct	No Ct	0.995	-3.545	
+B4	10_MST197_5uL_  Qty or ID	Unknown	10	0.0500	44.41	1.457e-001	0.995	-3.545	
+B5	10_MST197_5uL_  Qty or ID	Unknown	10	0.0500	39.90	2.72	0.995	-3.545	
+B6	10_MST197_5uL_  Qty or ID	Unknown	10	0.0500	43.96	1.946e-001	0.995	-3.545	
+C4	11_MST109_5uL_  Qty or ID	Unknown	11	0.0500	No Ct	No Ct	0.995	-3.545	
+C5	11_MST109_5uL_  Qty or ID	Unknown	11	0.0500	No Ct	No Ct	0.995	-3.545	
+C6	11_MST109_5uL_  Qty or ID	Unknown	11	0.0500	No Ct	No Ct	0.995	-3.545	
+D4	12_MST242_5uL_  Qty or ID	Unknown	12	0.0500	No Ct	No Ct	0.995	-3.545	
+D5	12_MST242_5uL_  Qty or ID	Unknown	12	0.0500	No Ct	No Ct	0.995	-3.545	
+D6	12_MST242_5uL_  Qty or ID	Unknown	12	0.0500	No Ct	No Ct	0.995	-3.545	
+E4	13_MST194_5uL_  Qty or ID	Unknown	13	0.0500	No Ct	No Ct	0.995	-3.545	
+E5	13_MST194_5uL_  Qty or ID	Unknown	13	0.0500	No Ct	No Ct	0.995	-3.545	
+E6	13_MST194_5uL_  Qty or ID	Unknown	13	0.0500	No Ct	No Ct	0.995	-3.545	
+F4	14_MST110_5uL_  Qty or ID	Unknown	14	0.0500	No Ct	No Ct	0.995	-3.545	
+F5	14_MST110_5uL_  Qty or ID	Unknown	14	0.0500	No Ct	No Ct	0.995	-3.545	
+F6	14_MST110_5uL_  Qty or ID	Unknown	14	0.0500	No Ct	No Ct	0.995	-3.545	
+G4	15_MST243_5uL_  Qty or ID	Unknown	15	0.0500	No Ct	No Ct	0.995	-3.545	
+G5	15_MST243_5uL_  Qty or ID	Unknown	15	0.0500	No Ct	No Ct	0.995	-3.545	
+G6	15_MST243_5uL_  Qty or ID	Unknown	15	0.0500	No Ct	No Ct	0.995	-3.545	
+H4	16_MST128_5uL_  Qty or ID	Unknown	16	0.0500	No Ct	No Ct	0.995	-3.545	
+H5	16_MST128_5uL_  Qty or ID	Unknown	16	0.0500	43.34	2.912e-001	0.995	-3.545	
+H6	16_MST128_5uL_  Qty or ID	Unknown	16	0.0500	No Ct	No Ct	0.995	-3.545	
+A7	17_MSTEX02_5uL_  Qty or ID	Unknown	17	0.0500	No Ct	No Ct	0.995	-3.545	
+A8	17_MSTEX02_5uL_  Qty or ID	Unknown	17	0.0500	No Ct	No Ct	0.995	-3.545	
+A9	17_MSTEX02_5uL_  Qty or ID	Unknown	17	0.0500	No Ct	No Ct	0.995	-3.545	
+B7	18_MSTEX03_5uL_  Qty or ID	Unknown	18	0.0500	No Ct	No Ct	0.995	-3.545	
+B8	18_MSTEX03_5uL_  Qty or ID	Unknown	18	0.0500	No Ct	No Ct	0.995	-3.545	
+B9	18_MSTEX03_5uL_  Qty or ID	Unknown	18	0.0500	No Ct	No Ct	0.995	-3.545	
+C7	19_MSTEX04_5uL_  Qty or ID	Unknown	19	0.0500	No Ct	No Ct	0.995	-3.545	
+C8	19_MSTEX04_5uL_  Qty or ID	Unknown	19	0.0500	No Ct	No Ct	0.995	-3.545	
+C9	19_MSTEX04_5uL_  Qty or ID	Unknown	19	0.0500	No Ct	No Ct	0.995	-3.545	
+D7	20_MST080_5uL_  Qty or ID	Unknown	20	0.0500	No Ct	No Ct	0.995	-3.545	
+D8	20_MST080_5uL_  Qty or ID	Unknown	20	0.0500	No Ct	No Ct	0.995	-3.545	
+D9	20_MST080_5uL_  Qty or ID	Unknown	20	0.0500	No Ct	No Ct	0.995	-3.545	
