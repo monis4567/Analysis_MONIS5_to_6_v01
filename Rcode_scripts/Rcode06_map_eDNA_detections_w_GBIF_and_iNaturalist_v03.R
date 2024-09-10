@@ -794,7 +794,7 @@ for (i in nfLSpc)
   p05t
   
   #
-  bSaveFigures<-T
+  bSaveFigures<-F
   if(bSaveFigures==T){
     ggsave(plot = p05t, 
            filename = paste0(wd00_wd07,"/Fig11_v",ins,"_map_of_",sbs_spcNm_wu,"_detected_2017_to_2023.png"),
@@ -926,7 +926,7 @@ size.f.pnt <- c(2.2,1.6,1.6,2.8)
 orde.f.pnt <- c(1,3,4,2)
 cate.f.pnt <- c("miljø DNA fundet","iNaturalist","www.arter.dk","ingen DNA")
 colo.f.pnt <- c(rep("black",4))
-alph.f.pnt <- c(0.6,1,0.6,0.6)
+alph.f.pnt <- c(0.6,0.6,0.6,1)
 # combine vectors to a data frame
 df_pntcats <- as.data.frame(cbind(fill.f.pnt,
                                   symb.f.pnt,

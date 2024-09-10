@@ -262,14 +262,28 @@ dir.create(wd00_wd08)
 #paste dirs together
 wd00_wd06 <- paste0(wd00,"/",wd06)
 
+
+#
+df_A08 <- df_A07
+#
+df_A08$orgFnd2 <- 1
+df_A08$orgFnd2[grepl("ingen",df_A08$reccat)] <- 0
+
+df_A08 <- df_A08 %>%
+  dplyr::select(Lat_Species,yer_ssn.per,orgFnd2, source) %>%
+  dplyr::group_by(Lat_Species,yer_ssn.per,source) %>%
+  dplyr::summarise(tot_sum = sum(orgFnd2)) 
+
 # make a range of colours for the geom_points in the ggplots
 #http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 # The palette with black:
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
                 "#F0E442", "#0072B2", "#D55E00", "#CC79A7",
                 "#ffa4ff", "#ff209f", "#8c0020", "#06167F",
-                "#B2B23E", "#A56608", "khaki2", "#97FF59",
-                "#065d74")
+                "#B2B23E", "#A56608","grey21", "khaki2", "#97FF59",
+                "#065d74","grey56","orange","seagreen",
+                "white","red","orchid3","blue","yellow",
+                "limegreen","cyan","magenta","tomato3")
 
 library(ggplot2)
 library(tidyverse)
@@ -282,9 +296,9 @@ toexpr <- function(x, plain = NULL) {
 }
 
 # make stacked bar plot
-p05 <- ggplot(dfg05.03, aes(fill=Lat_Species, 
+p05 <- ggplot(df_A08, aes(fill=Lat_Species, 
                             y=tot_sum, 
-                            x=yer_ssn2)) + 
+                            x=yer_ssn.per)) + 
   # also see: https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/
   theme_void() +
   # make the x-axis labels rotate 90 degrees
@@ -292,23 +306,27 @@ p05 <- ggplot(dfg05.03, aes(fill=Lat_Species,
   # alter the labels along the x- and y- axis
   labs(y = "positive miljø-DNA detektioner", x = "årstal og sæson") + 
   guides(fill=guide_legend(title="Latinsk artsnavn")) +
+  #Arrange in facets
+  ggplot2::facet_wrap( ~ source,
+                       drop=FALSE,
+                       dir="h",
+                       ncol = 1,
+                       labeller = label_bquote(cols =
+                                                 .(as.character(source))
+                       ) ) +
   # use a manual  fill color scale, and make use of the function above for
   # making the species names in italics
   scale_fill_manual(values=cbbPalette,
-                    labels = toexpr(unique(dfg05.03$Lat_Species), plain = 'Wt')) +
+                    labels = toexpr(unique(df_A08$Lat_Species), plain = 'Wt')) +
   # geom_text(data=dfg05.01,aes(label = count), vjust = -0.2) +
   geom_bar(position='stack', stat='identity')
 
+#p05
 
 bSaveFigures<-T
 if(bSaveFigures==T){
   ggsave(plot = p05, 
-         filename = paste0(wd00_wd06,"/Fig06_v01_stckbar_plot_NIS_detected_on_each_site_2021_to_2023.png"),
-         #width=210*0.64,height=297,
-         #width=210*0.8,height=297,
-         #width=210,height=297,
-         width=210,height=297*0.7,
-         #width=297,height=210,
-         #width=1.4*297,height=210,
+         filename = paste0(wd00_wd08,"/Fig13_v01_stckbar_plot_NISrecords_from_arterdk_iNat_MONIS6_2021_to_2023.png"),
+         width=210,height=297,
          units="mm",dpi=300)
 }
