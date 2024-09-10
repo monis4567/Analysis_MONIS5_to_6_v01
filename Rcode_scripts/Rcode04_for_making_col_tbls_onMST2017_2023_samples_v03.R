@@ -81,7 +81,18 @@ require(graphics)
 #   library(plyr)
 # }
 library(plyr)
-
+# I had difficulties getting 'xlsx' installed
+# and found I needed "rJava"
+# but "rJava" required this in a terminal first :
+# $ sudo apt-get install openjdk-8-jdk
+# $ sudo apt-get install default-jre
+# $ sudo apt-get install default-jdk
+# $ sudo R CMD javareconf
+# Solution was here: https://stackoverflow.com/questions/3311940/r-rjava-package-install-failing
+# install.packages("rJava")
+# Once "rJava" was installed
+#I was able to install "xlsx" 
+# library("rJava")
 # if(!require(xlsx)){
 #   install.packages("xlsx")
 #   library(xlsx)
@@ -90,16 +101,16 @@ library(xlsx)
 
 #get package to make maps - see this website: http://www.molecularecologist.com/2012/09/making-maps-with-r/
 #install.packages("mapdata")
-#library(mapdata)
+library(mapdata)
 #get package to make maps - see this website: http://www.molecularecologist.com/2012/09/making-maps-with-r/
 #install.packages("maps")
-#library(maps)
+library(maps)
 # #get package for shapefiles see this website: http://www.molecularecologist.com/2012/09/making-maps-with-r/
 # install.packages(maptools)
 # library(maptools)  #for shapefiles
 # #get package for adding pies on the map
 #install.packages("mapplots")
-#library(mapplots)
+library(mapplots)
 # devtools::install_github("davidgohel/ReporteRs")
 # devtools::install_github("davidgohel/officer")
 # if(!require(officer)){

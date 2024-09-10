@@ -805,7 +805,7 @@ for (i in nfLSpc)
            #width=1.4*297,height=210,
            units="mm",dpi=300)
   }
-  # end iteration over latin species names
+  # end iteration over Latin species names
 }
 
 #
@@ -818,7 +818,8 @@ noss<- length(uyssn)
 # https://stackoverflow.com/questions/69160320/repeat-rows-making-each-repeated-rows-following-the-original-rows-and-assign-new?noredirect=1&lq=1
 library(dplyr)
 library(tidyr)
-
+#ensure the months are as numeric values
+dfg05$mnt <- as.numeric(gsub("(^.*)-(.*)-(.*$)","\\2",dfg05$Dato_inds))
 df_A05$ssnno2 <- df_A05$ssnno
 
 df_A05$ssnno2 <- gsub("1st","jan - jun",df_A05$ssnno)
@@ -840,85 +841,172 @@ keepcol <- c( "Dato_inds",
 # only keep specific columns
 df_A06 <- df_A06[keepcol]
 dfg06 <- dfg05[keepcol]
+
 #bind rows together in columns
 df_A06 <- rbind(df_A06,dfg06)
 
+unique(df_A06$mnt)
 # exclude rows if it does not contain a space, and if it contains a zero
 df_A06 <- df_A06[grepl(" ",df_A06$Lat_Species),]
 df_A06 <- df_A06[!grepl("0",df_A06$Lat_Species),]
+# add a column with source cagtegories
+df_A06$source <- NA
+df_A06$source[grepl("iNat",df_A06$eval)] <- "iNat"
+df_A06$source[grepl("eDNA",df_A06$eval)] <- "MONIS6"
+# make a data frame that can be used for matching short evaluation and record
+# categories to obtain long category names
+evc01 <- c("iNat","no eDNA","eDNA found")
+evc02 <- c("iNaturalist","ingen DNA","miljø DNA fundet")
+df_evc <- as.data.frame(cbind(evc01,evc02))
 
+# define directory path for data files
+# read file with records from www.arter.dk
+wd00_wddata <- paste0(wd00,"/data")
+lst.flwddat <- list.files(wd00_wddata, full.names = T)
+inf01 <- lst.flwddat[grepl("fund_arter_dk",lst.flwddat)]
+#read the xls file with 
+df_fa01  <- readxl::read_excel(inf01, sheet = 2)
+# copy and modify column names to make it match the other data frame 
+# with MONIS6 records
+# make a column that has the record category information
+df_fa01$reccat <- "www.arter.dk"
+df_fa01$source <- "arter.dk"
+# get the longitude and latitude for the sampled locations
+df_fa01$declat <- df_fa01$Lat
+df_fa01$declon <- df_fa01$Long
+# get sampling year and month
+df_fa01$yer <- as.numeric(gsub(".*-(.*)","\\1",df_fa01$Observationsdato))
+df_fa01$mnt <- as.numeric(gsub(".*\\/(.*)-(.*)","\\1",df_fa01$Observationsdato))
+# get the Latin species names
+df_fa01$Lat_Species <- df_fa01$`Taxon latinsk navn`
+# ensure the latitude and longitude ar numeric
+df_A06$declat <- as.numeric(df_A06$declat)
+df_A06$declon <- as.numeric(df_A06$declon)
+unique(df_A06$eval)
+# match to get the long record category for each sample
+df_A06$reccat <- df_evc$evc02[match(df_A06$eval,df_evc$evc01)]
+# define a vector with columns name to keep
+ctkeep <- c("Lat_Species",
+            "reccat",
+            "yer",
+            "mnt",
+            "declat",
+            "declon",
+            "source")
+# subset data frame by limiting to only the columns required for the mapping
+df_A07 <- df_A06[ctkeep]
+df_fa02 <- df_fa01[ctkeep]
+# combine tthe data frames by adding rows, since they now have the
+# same column names
+df_A07 <- rbind(df_A07,df_fa02)
+# make sure the months are as numeric values to be able to evaluate on the
+# values
+df_A07$mnt <- as.numeric(df_A07$mnt)
+df_A07$yer <- as.numeric(df_A07$yer)
 
+# substitute in the species names
+df_A07$Lat_Species <-  gsub("Crassostrea gigas" ,"Magallana gigas",df_A07$Lat_Species)
+df_A07$Lat_Species <- gsub("Colpomenia peregrine" , "Colpomenia peregrina" ,df_A07$Lat_Species)
+# make a column that evaluates the season sampled
+df_A07$ssn.per <- NA
+# evalutate on the season column to add a number version of the season
+df_A07$ssn.per[(df_A07$mnt<=6)] <- "jan - jun"
+df_A07$ssn.per[(df_A07$mnt>6)]  <- "jul - nov"
+# make columns that holds both year and sampled period
+df_A07$yer_ssn.per <- paste0(df_A07$yer,", ",df_A07$ssn.per)
+df_A07[is.na(df_A07$ssn.per),]
+
+# limit the years to only cover the MONIS6 years sampled
+df_A07 <- df_A07[(df_A07$yer<=2023),]
+df_A07 <- df_A07[(df_A07$yer>=2017),]
 # make color range
-cl06 <- c("firebrick3","steelblue1","white")
-nspo2 <- length(unique(df_A06$eval))
-# # make a datra frame to sort monitoring categories
-# df_mcat <- as.data.frame(cbind(unique(df_A06$eval), c(2,3,1)))
-# # change column names
-# colnames(df_mcat) <- c("eval","ordcat")
-# # match back to main data frame
-# df_A06$ordcat <- df_mcat$ordcat[match(df_A06$eval,df_mcat$eval)]
-# ordcat1 <- unique(df_A06$ordcat)
-# reorder the data frame
-# df_A06 <- df_A06[order(df_A06$family, df_A06$ordcat), ]
-# replace in the evaluation category
-df_A06$eval <- gsub("eDNA found","eDNA detected",df_A06$eval)
-df_A06$eval <- gsub("no_eDNA","no eDNA",df_A06$eval)
-df_A06$eval <- gsub("gbif","GBIF",df_A06$eval)
-# opy the columns with latitude and longitude
-df_A06$Latitude  <- as.numeric(df_A06$declat)
-df_A06$Longitude <- as.numeric(df_A06$declon)
+fill.f.pnt <- c("firebrick3","steelblue1","khaki3","white")
+symb.f.pnt <- c(21,22,25,3)
+size.f.pnt <- c(2.2,1.6,1.6,2.8)
+orde.f.pnt <- c(1,3,4,2)
+cate.f.pnt <- c("miljø DNA fundet","iNaturalist","www.arter.dk","ingen DNA")
+colo.f.pnt <- c(rep("black",4))
+alph.f.pnt <- c(0.6,1,0.6,0.6)
+# combine vectors to a data frame
+df_pntcats <- as.data.frame(cbind(fill.f.pnt,
+                                  symb.f.pnt,
+                                  size.f.pnt,
+                                  orde.f.pnt,
+                                  colo.f.pnt,
+                                  alph.f.pnt,
+                                  cate.f.pnt))
 # get the number of latin species
-LSpc <- unique(df_A06$Lat_Species)
-unique(df_A06$yer_ssn2)
+LSpc <- unique(df_A07$Lat_Species)
+LSpc <- LSpc[order(LSpc)]
+
 # make a sequence for this range
 nfLSpc<- seq(1,length(LSpc),1)
 # iterate over species
 for (i in nfLSpc)
 {print(paste0(i, " making plot for ",LSpc[i]))
-  #}
-  # i <- 3
+  # }
+  #  i <- 3
   #see this website: https://stackoverflow.com/questions/5812493/adding-leading-zeros-using-r
   ins <- stringr::str_pad(i, 2, pad = "0")
   # get the species name with an underscore
   sbs_spcNm_wu <- gsub(" ","_",LSpc[i])
+  sbs_spcNm_wu
   #}
   # make a function to use for making facet wrap headers
   # https://ggplot2.tidyverse.org/reference/as_labeller.html
   # https://stackoverflow.com/questions/63857833/changing-the-facet-wrap-labels-using-labeller-in-ggplot2
   #appender <- function(nm1) paste0(df_tx01$class[match(nm1,df_tx01$family )],": ", nm1)
   
-  df_A06.1 <- df_A06[grepl(LSpc[i],df_A06$Lat_Species),]
+  df_A07.1 <- df_A07[grepl(LSpc[i],df_A07$Lat_Species),]
   # add a level for jittering points
   jitlvl <- 0.03
   #make plot
-  
+  uyssn <- unique(df_A07$yer_ssn.per)
+  noss<- length(uyssn)
   # identify the missing seasons for sampled period
-  usss <- unique(df_A06.1$yer_ssn2) 
+  usss <- unique(df_A07.1$yer_ssn.per) 
   msssn <- uyssn[!(uyssn %in% usss) ]
   nmsssn <- length(msssn)
-  nclA06.1 <- ncol(df_A06.1)
-  eRw <- rep(0,nclA06.1)
-  clNmA06.1 <- colnames(df_A06.1)
+  nclA07.1 <- ncol(df_A07.1)
+  eRw <- rep(0,nclA07.1)
+  clNmA07.1 <- colnames(df_A07.1)
   dfeR <- as.data.frame(t((eRw)))
-  colnames(dfeR) <- clNmA06.1
+  colnames(dfeR) <- clNmA07.1
   dfeR <- dfeR[rep(seq_len(nrow(dfeR)), each = nmsssn), ]
-  ixcN <- which(grepl("yer_ssn2",colnames(df_A06.1)))
+  ixcN <- which(grepl("yer_ssn.per",colnames(df_A07.1)))
   dfeR[,ixcN] <- msssn
-  df_A06.2 <- rbind(df_A06.1,dfeR)
+  df_A07.2 <- rbind(df_A07.1,dfeR)
   # make 'iNat' categories for the zeroes for the added years
-  df_A06.2$eval[(df_A06.2$eval==0)] <- "iNat"
-  
-  #df_A06.2 <- df_A06.1
-  # subset data frame
-  df_A07 <- df_A06.2[(df_A06.2$eval=="iNat"),]
-  # make a data frame 
-  df_A07.ne <- df_A06.2[(df_A06.2$eval=="no eDNA"),]
-  df_A07.ed <- df_A06.2[(df_A06.1$eval=="eDNA detected"),]
-  
-  # change the labels to Danish
-  df_A06.2$eval[(df_A06.2$eval=="eDNA detected")] <- "miljø DNA fundet"
-  df_A06.2$eval[(df_A06.2$eval=="no eDNA")] <- "ingen DNA"
-  df_A06.2$eval[(df_A06.2$eval=="iNat")] <- "iNaturalist"
+  df_A07.2$reccat[(df_A07.2$reccat=="0")] <- "iNaturalist"
+  # df_A07.2[is.na(df_A07.2$reccat),]
+  # # unique(df_A07.2$reccat)
+  # # subset data frame
+  # df_A08 <- df_A07.2[(df_A07.2$eval=="iNat"),]
+  # # make a data frame 
+  # df_A08.ne <- df_A07.2[(df_A07.2$reccat=="no eDNA"),]
+  # df_A08.ed <- df_A07.2[(df_A07.1$reccat=="eDNA detected"),]
+  # 
+  # # change the labels to Danish
+  # df_A06.2$eval[(df_A06.2$eval=="eDNA detected")] <- "miljø DNA fundet"
+  # df_A06.2$eval[(df_A06.2$eval=="no eDNA")] <- "ingen DNA"
+  # df_A06.2$eval[(df_A06.2$eval=="iNat")] <- "iNaturalist"
+  # # find  the categories for the points to plot 
+  # and use for the manual scales
+  catf_plt <- unique(df_A07.2$reccat)
+  # match to get the fill, the pch symbol, the size and the order
+  sz_f_mnscl <- as.numeric(df_pntcats$size.f.pnt[match(catf_plt,df_pntcats$cate.f.pnt)])
+  sy_f_mnscl <- as.numeric(df_pntcats$symb.f.pnt[match(catf_plt,df_pntcats$cate.f.pnt)])
+  fi_f_mnscl <- df_pntcats$fill.f.pnt[match(catf_plt,df_pntcats$cate.f.pnt)]
+  co_f_mnscl <- df_pntcats$colo.f.pnt[match(catf_plt,df_pntcats$cate.f.pnt)]
+  al_f_mnscl <- as.numeric(df_pntcats$alph.f.pnt[match(catf_plt,df_pntcats$cate.f.pnt)])
+  # get the order for plotting the point
+  df_A07.2$or_f_pnt <- df_pntcats$orde.f.pnt[match(df_A07.2$reccat,df_pntcats$cate.f.pnt)]
+  df_A07.2$or_f_pnt <- as.numeric(df_A07.2$or_f_pnt)
+  # reorder the data frame to be able to plot the  points in
+  # an order that allows the iNaturalist and www.arter.dk records to be plottted
+  # below the MONIS6 eDNA results
+  df_A07.2 <- df_A07.2[order(df_A07.2$or_f_pnt, decreasing = T),]
+  #dev.off()
   #make plot
   p05 <- ggplot(data = world) +
     geom_sf(color = "black", fill = "azure3", lwd=0.1) +
@@ -927,23 +1015,23 @@ for (i in nfLSpc)
     #https://ggplot2.tidyverse.org/reference/position_jitter.html
     #https://stackoverflow.com/questions/15706281/controlling-the-order-of-points-in-ggplot2
     # use 'geom_jitter' instead of 'geom_point' 
-    geom_point(data = df_A06.2 ,
-                aes(x = Longitude, 
-                    y = Latitude,
-                    color=eval,
-                    size=eval,
-                    fill=eval,
-                    shape=eval) ) + #,
+    geom_point(data = df_A07.2 ,
+                aes(x = declon, 
+                    y = declat,
+                    #color=reccat,
+                    size=reccat,
+                    fill=reccat,
+                    shape=reccat) ) + #,
                 
                 # width = jitlvl, #0.07, jitter width 
                 # height = jitlvl) + #, #0.07, # jitter height
     #Arrange in facets
-    ggplot2::facet_wrap( ~ yer_ssn2,
+    ggplot2::facet_wrap( ~ yer_ssn.per,
                          drop=FALSE,
                          dir="h",
                          ncol = 2,
                          labeller = label_bquote(cols =
-                                                   .(as.character(yer_ssn2))
+                                                   .(as.character(yer_ssn.per))
                          ) ) +
     # alter the them strip above
     theme(strip.text = element_text(#face = "bold",
@@ -972,17 +1060,14 @@ for (i in nfLSpc)
     #            shape=21,colour=alpha("#000000",1),fill=alpha("firebrick3",0.6),
     #            size=2.4) +
     # Set the colors of the outline of the points manually
-    scale_color_manual(values=c(alpha("#000000",0.6),
-                                alpha("black",1),
-                                alpha("black",1))) +
-    # Set the colors of the fill of the points manually
-    scale_fill_manual(values=c(alpha("deepskyblue2",0.6),
-                               alpha("black",1),
-                               alpha("firebrick3",0.6) )) +
+    scale_color_manual(values=c(alpha( co_f_mnscl,al_f_mnscl) ), breaks = catf_plt ) +
+    # # Set the colors of the fill of the points manually
+    #scale_fill_manual(values=c(fi_f_mnscl), breaks = catf_plt) +
+    scale_fill_manual(values=c(alpha( fi_f_mnscl,al_f_mnscl) ), breaks = catf_plt ) +
     # Set the shape of the points manually
-    scale_shape_manual(values=c(22,3,21)) +
+    scale_shape_manual(values=c(sy_f_mnscl),breaks = catf_plt) +
     # Set the size of the points manually
-    scale_size_manual(values=c(1.6,2.4,2.2)) +
+    scale_size_manual(values=c(sz_f_mnscl),breaks = catf_plt) +
     #
     labs(title = LSpc[i]) +
     # make the  labels turn 90 degrees on the x-axis
@@ -1012,7 +1097,7 @@ for (i in nfLSpc)
   p05t <- p05t + labs(shape='')
   p05t <- p05t + labs(size='')
   #get the number of species
-  ncat <- length(unique(df_A07$eval))
+  ncat <- length(unique(df_A07$reccat))
   # https://github.com/tidyverse/ggplot2/issues/3492
   #repeat 'black' a specified number of times
   filltxc = rep("black", ncat)
@@ -1027,7 +1112,8 @@ for (i in nfLSpc)
   bSaveFigures<-T
   if(bSaveFigures==T){
     ggsave(plot = p05t, 
-           filename = paste0(wd00_wd07,"/Fig12_v",ins,"_map_of_",sbs_spcNm_wu,"_detected_2017_to_2023.png"),
+           filename = paste0(wd00_wd07,"/Fig12_v",ins,"_map_of_",
+                             sbs_spcNm_wu,"_detected_2017_to_2023.png"),
            width=210*0.70,height=297,
            #width=210*0.8,height=297,
            #width=297,height=210,
