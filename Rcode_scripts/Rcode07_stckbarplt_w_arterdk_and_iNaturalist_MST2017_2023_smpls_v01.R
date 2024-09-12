@@ -854,8 +854,8 @@ p05 <- ggplot(df_A08,aes(x=yer,
     bSaveFigures<-T
     if(bSaveFigures==T){
       ggsave(plot = p05, 
-             filename = paste0(wd00_wd08,"/Fig15_v",ins,"_linear_regr_per_source.png"),
-             width=210,height=297*0.6,
+             filename = paste0(wd00_wd08,"/Fig15_v01_linear_regr_per_source.png"),
+             width=210,height=297*(1/3),
              units="mm",dpi=300)
     }
 
