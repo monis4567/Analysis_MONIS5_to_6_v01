@@ -503,6 +503,10 @@ df_A08 <- df_A08 %>% dplyr::left_join(df_cfphy,
 # find the minimum and maximum for the years sampled
 mn.yer <- min(df_A08$yer)
 mx.yer <- max(df_A08$yer)
+# exclude rows if zero
+# No need to plot points that have zero detections
+# and no need to evaluate on the zero detections
+df_A08 <- df_A08[!(df_A08$tot_sum==0),]
 # identify which rows have detections, that occurs in how many rows
 cntsA08 <- plyr::ddply(df_A08, .(df_A08$ssn.per, 
                            df_A08$source,
@@ -622,6 +626,89 @@ for (phrc in nfPhy)
              filename = paste0(wd00_wd08,"/Fig14_v",ins,"_linear_regr_",phylum_wu,".png"),
              width=210,height=297*0.6*fct.hght,
              units="mm",dpi=300)
+# end check for whether to store plot
     }
+# end 'if check' if data frame is empty
   }
+# end iteration over phylum
 }
+#_______________________________________________________________________________
+
+
+# paste together to have a variable that reflects the species, the source and
+# the season sampled
+df_A08$LtSp.ssn.src <- paste(df_A08$Lat_Species,
+                            df_A08$ssn.per,
+                            df_A08$source,
+                            sep="_")
+# find the unique combinations for species, seasdon and source
+LtSp.ssn.src <- unique(df_A08$LtSp.ssn.src)
+# and count them, to make a sequence of numbers
+nLtSp.ssn.src <- length(LtSp.ssn.src)
+sqLtSp.ssn.src <- seq(1,nLtSp.ssn.src,1)
+#
+
+lst_lm_spc.ssn.src <- list()
+for (i in sqLtSp.ssn.src)
+  {
+  #i <- 59
+  #}
+  oLtSp_sn_src <- LtSp.ssn.src[i]
+  print(oLtSp_sn_src)
+  # split the string
+  lngNmspl <- strsplit(as.character(oLtSp_sn_src), "_")
+  # and use the splitted string to get each element
+  LtsNm <- sapply(lngNmspl, "[[", 1)
+  ssnNm <- sapply(lngNmspl, "[[", 2)
+  srcNm <- sapply(lngNmspl, "[[", 3)
+  
+  
+  df_A11 <- df_A08[(df_A08$LtSp.ssn.src==oLtSp_sn_src),]
+  
+  yer.tsm.lm <- lm(tot_sum~ yer, data = df_A11)
+  #cor(x, y)  # calculate correlation between x and y
+  # calculate correlation between tot_sum and yer 
+  cor_yer.tsm.lm <- cor(df_A11$tot_sum, df_A11$yer)  
+  summ.lm_yer.tsm  <-summary(yer.tsm.lm)
+  # get the R2 and adjusted R2 values 
+  adj.r.squared <- summ.lm_yer.tsm$adj.r.squared
+  adj.r.squared <- round(adj.r.squared, digits = 2)
+  r.squared <- summ.lm_yer.tsm$r.squared
+  r.squared <- round(r.squared, digits = 2)
+  # get the intercept and the increment and p-values
+  intcpt <- summ.lm_yer.tsm$coefficients[1,1]
+  intcpt <- round(intcpt, digits = 2)
+  incrm <- summ.lm_yer.tsm$coefficients[2,1]
+  incrm <- round(incrm, digits = 2)
+  pval_lm_yer.tsm <- summ.lm_yer.tsm$coefficients[2,4]
+  pval_lm_yer.tsm <- round(pval_lm_yer.tsm, digits = 2)
+  
+  # combine values in to a data frame
+  df_lm_yer.tsm <- as.data.frame(cbind(intcpt,
+                                        incrm,
+                                        r.squared,
+                                        adj.r.squared,
+                                        pval_lm_yer.tsm,
+                                       oLtSp_sn_src,
+                                       LtsNm,
+                                       ssnNm,
+                                       srcNm
+                                       )) 
+  # collect the data frame in a list
+  lst_lm_spc.ssn.src[[i]] <- df_lm_yer.tsm
+  # end iteration over seq numbers for latinspc_sssn_source
+  }
+
+#
+df_A11_lm_sum <- dplyr::bind_rows(lst_lm_spc.ssn.src, .id = "column_label")
+
+df_A11_lm_sum
+  
+  
+  #
+  
+  #
+  
+  #
+  
+  
