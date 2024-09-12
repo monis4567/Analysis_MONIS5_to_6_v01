@@ -89,6 +89,13 @@ library(plyr)
 # }
 library(xlsx)
 
+#install.packages("tableHTML")
+# #https://cran.r-project.org/web/packages/tableHTML/vignettes/tableHTML.html
+# if(!require(tableHTML)){
+#   install.packages("tableHTML")
+#   library(tableHTML)
+# }
+library(tableHTML)
 #get package to make maps - see this website: http://www.molecularecologist.com/2012/09/making-maps-with-r/
 #install.packages("mapdata")
 #library(mapdata)
@@ -699,13 +706,62 @@ for (i in sqLtSp.ssn.src)
   # end iteration over seq numbers for latinspc_sssn_source
   }
 
-#
+# combine the list of data frames into a data frame
 df_A11_lm_sum <- dplyr::bind_rows(lst_lm_spc.ssn.src, .id = "column_label")
+# exclude if  'r.squared' is NaN
+df_A11_lm_sum <- df_A11_lm_sum[!(grepl("NaN",df_A11_lm_sum$r.squared)),]
 
-df_A11_lm_sum
-  
-  
-  #
+# re-order the data frame by species, by season sampled, and then by
+# source
+df_A11_lm_sum <- df_A11_lm_sum %>% dplyr::arrange(LtsNm, ssnNm, srcNm)
+# Check if the 
+df_A11_lm_sum$sgnfpval <- df_A11_lm_sum$pval_lm_yer.tsm<=0.05
+df_A11_lm_sum$sgnf_eval <- "ikke sign"
+df_A11_lm_sum$sgnf_eval[(df_A11_lm_sum$sgnfpval==T)] <- "sign"
+df_lm_sum <- df_A11_lm_sum[(df_A11_lm_sum$sgnfpval==T),]
+# define columns to keep
+ctkeep <- c("LtsNm", "ssnNm", "srcNm", 
+            "intcpt", "incrm", "r.squared", "adj.r.squared", 
+"pval_lm_yer.tsm","sgnf_eval")
+# only keep specified columns
+df_lm_sum02 <- df_A11_lm_sum[ctkeep]
+# change column headers
+colnames(df_lm_sum02) <- c( "Latinsk artsnavn",
+                            "sæson",
+                            "kilde for fund",
+                            "skæring",
+                            "hældning",
+                            "R2",
+                            "jR2",
+                            "p-værdi",
+                            "sigifikans vurdering")
+
+library(htmlTable)
+# make a table caption
+capt_tbl02 <-        paste0(
+  "Tabel 1. Værdier for lineær regressionsmodeller for antallet af fund af ikke-hjemmehørende",
+  " arter per år per sæson for MONIS6 projektet og to hjemmesider (arter.dk og iNaturalist.org). ",
+  "Skæring og hældning er for den estimerede lineære model. Vurderingen om",
+  " den lineære sammenhæng mellem antallet af fund og året er gjort en p-værdi",
+  " på 0,05 eller mindre. For de arter hvor der er en en sammenhæng er angiver kolonnen ",
+  "'singifikans vurdering' om den lineære model er signifikant eller ej.",
+  " Ikke alle arter, sæsoner og kilder er inkluderet i tabellen, da der for nogle arter og nogle",
+  " kilder ikke var tre eller flere datapunkter at udføre lineær regression på."
+)
+# show the table
+t.HTML06 <- df_lm_sum02 %>%
+  addHtmlTableStyle(align = "r") %>%
+  htmlTable(caption = capt_tbl02, rnames = FALSE)
+t.HTML06
+
+# Make a filename to store the html table with Fst vaules
+filNm.for_html <- paste0(
+  wd00_wd08,
+  "/Table01_v01",
+  "_html_table_linear_regress_model",
+  ".html"
+)
+
   
   #
   
