@@ -661,7 +661,7 @@ for (i in sqLtSp.ssn.src)
   #i <- 59
   #}
   oLtSp_sn_src <- LtSp.ssn.src[i]
-  print(oLtSp_sn_src)
+  #print(oLtSp_sn_src)
   # split the string
   lngNmspl <- strsplit(as.character(oLtSp_sn_src), "_")
   # and use the splitted string to get each element
@@ -742,7 +742,7 @@ capt_tbl02 <-        paste0(
   "Tabel 1. Værdier for lineær regressionsmodeller for antallet af fund af ikke-hjemmehørende",
   " arter per år per sæson for MONIS6 projektet og to hjemmesider (arter.dk og iNaturalist.org). ",
   "Skæring og hældning er for den estimerede lineære model. Vurderingen om",
-  " den lineære sammenhæng mellem antallet af fund og året er gjort en p-værdi",
+  " den lineære sammenhæng mellem antallet af fund og året er gjort en med p-værdi",
   " på 0,05 eller mindre. For de arter hvor der er en en sammenhæng er angiver kolonnen ",
   "'singifikans vurdering' om den lineære model er signifikant eller ej.",
   " Ikke alle arter, sæsoner og kilder er inkluderet i tabellen, da der for nogle arter og nogle",
@@ -764,8 +764,12 @@ filNm.for_html <- paste0(
 # save the html table
 htmltools::save_html(t.HTML06, file = filNm.for_html)
 
-  #
-  
+# limit to only MONIS6 evaluated
+df_lm_sum02MONIS6 <- df_lm_sum02[grepl("MONIS6",df_lm_sum02$`kilde for fund`),]
+# check if any from MONIS6 are significant
+df_lm_sum02MONIS6 <- df_lm_sum02MONIS6[!grepl("ikke",df_lm_sum02MONIS6$`sigifikans vurdering`),]
+
+
   #
   
   
