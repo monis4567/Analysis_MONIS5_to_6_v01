@@ -754,15 +754,16 @@ t.HTML06 <- df_lm_sum02 %>%
   htmlTable(caption = capt_tbl02, rnames = FALSE)
 t.HTML06
 
-# Make a filename to store the html table with Fst vaules
+# Make a filename to store the html table with  values
 filNm.for_html <- paste0(
   wd00_wd08,
   "/Table01_v01",
   "_html_table_linear_regress_model",
   ".html"
 )
+# save the html table
+htmltools::save_html(t.HTML06, file = filNm.for_html)
 
-  
   #
   
   #
