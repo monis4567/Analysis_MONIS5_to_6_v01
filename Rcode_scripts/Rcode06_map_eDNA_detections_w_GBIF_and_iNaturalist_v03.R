@@ -363,6 +363,13 @@ lst_orgnsm <- c(
 
 # read in the saved  data frame
 dfg05<- read.csv(file=paste0(wd00_wd06,"/table_12_v01_results_for_plotting_on_map.csv"))
+
+# substitute on the incorrect species names
+dfg05$Lat_Species <- gsub("Oncorhyncus gorbuscha","Oncorhynchus gorbuscha",
+                           dfg05$Lat_Species)
+dfg05$Lat_Species <- gsub("Prorocentrum minimum","Prorocentrum cordatum",
+                           dfg05$Lat_Species)
+
 # vmake a alist of the species names
 latSpcNms  <- unique(dfg05$Lat_Species)
 # limit to species names that have a 'sapce' included
@@ -590,6 +597,7 @@ df_A05$Dato_inds <- df_A05$datetime
 df_A05$declat <- df_A05$latitude
 df_A05$declon <- df_A05$longitude
 df_A05$Lat_Species <- df_A05$txNmsrch
+
 # get the year from the date
 # see: https://stackoverflow.com/questions/36568070/extract-year-from-date
 df_A05$yer<- format(as.Date(df_A05$Dato_inds),"%Y")
@@ -849,6 +857,7 @@ unique(df_A06$mnt)
 # exclude rows if it does not contain a space, and if it contains a zero
 df_A06 <- df_A06[grepl(" ",df_A06$Lat_Species),]
 df_A06 <- df_A06[!grepl("0",df_A06$Lat_Species),]
+
 # add a column with source cagtegories
 df_A06$source <- NA
 df_A06$source[grepl("iNat",df_A06$eval)] <- "iNat"
@@ -1123,7 +1132,9 @@ for (i in nfLSpc)
   }
   # end iteration over latin species names
 }
-
-
+# define file name to write data frame out to
+outflNm <- paste0(wd00_wd07,"/Table06_iNat_arterdk_and_MONIS6_records_2017_2023.csv")
+# write data frame out to file
+write.table(df_A07,outflNm, sep=";")
 #
 #

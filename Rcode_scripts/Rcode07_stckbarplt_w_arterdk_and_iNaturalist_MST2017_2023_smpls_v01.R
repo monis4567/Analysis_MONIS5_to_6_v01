@@ -241,6 +241,19 @@ library(rgbif)
 library(dismo)
 library(tidyr)
 
+# #install.packages("worrms")
+# if(!require(worrms)){
+#   install.packages("worrms")
+#   library(worrms)
+# }
+# #install.packages("taxize")
+# if(!require(taxize)){
+#   install.packages("taxize")
+#   library(taxize)
+# }
+library(worrms)
+library(taxize)
+
 # define working directory
 
 #wd00 <- "/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6/Analysis_MONIS5_to_6"
@@ -248,9 +261,11 @@ library(tidyr)
 wd00 <- getwd()
 # define input directory
 wd06 <- "output06_presence_absence_evaluation_for_MST2017_2022_samples"
+wd07 <- "output07_map_eDNA_detections_with_GBIF_and_iNat_for_MST2017_2023_samples"
 # define out directory
 wd08 <- "output08_stckbarplot_w_GBIF_and_iNat_for_MST2017_2023_records"
 #paste dirs together
+wd00_wd07 <- paste0(wd00,"/",wd07)
 wd00_wd08 <- paste0(wd00,"/",wd08)
 #Delete any previous versions of the output directory
 unlink(wd00_wd08, recursive=TRUE)
@@ -262,28 +277,121 @@ dir.create(wd00_wd08)
 #paste dirs together
 wd00_wd06 <- paste0(wd00,"/",wd06)
 
-
+# define file name for input file
+inpflNm <- paste0(wd00_wd07,"/Table06_iNat_arterdk_and_MONIS6_records_2017_2023.csv")
+# read in data frame
+df_A07 <- read.table(inpflNm,sep = ";")
 #
 df_A08 <- df_A07
+
+# make a column that evaluates the season sampled
+df_A07$ssn.no <- NA
+# evaluate on the season column to add a number version of the season
+df_A07$ssn.no[(df_A07$mnt<=6)] <- "1st"
+df_A07$ssn.no[(df_A07$mnt>6)]  <- "2nd"
+
 #
 df_A08$orgFnd2 <- 1
 df_A08$orgFnd2[grepl("ingen",df_A08$reccat)] <- 0
-
+#
 df_A08 <- df_A08 %>%
-  dplyr::select(Lat_Species,yer_ssn.per,orgFnd2, source) %>%
-  dplyr::group_by(Lat_Species,yer_ssn.per,source) %>%
+  dplyr::select(Lat_Species,yer_ssn.per,ssn.per,yer,orgFnd2, source) %>%
+  dplyr::group_by(Lat_Species,yer_ssn.per,yer,ssn.per,source) %>%
   dplyr::summarise(tot_sum = sum(orgFnd2)) 
-
 # make a range of colours for the geom_points in the ggplots
 #http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 # The palette with black:
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
                 "#F0E442", "#0072B2", "#D55E00", "#CC79A7",
                 "#ffa4ff", "#ff209f", "#8c0020", "#06167F",
-                "#B2B23E", "#A56608","grey21", "khaki2", "#97FF59",
+                "#B2B23E", "#A56608","grey21", "khaki3", "#97FF59",
                 "#065d74","grey56","orange","seagreen",
-                "white","red","orchid3","blue","yellow",
+                "bisque","red","orchid3","blue","yellow",
                 "limegreen","cyan","magenta","tomato3")
+# check this website for help on how to retrieve taxonomical information
+# https://www.r-bloggers.com/2017/01/extracting-and-enriching-ocean-biogeographic-information-system-obis-data-with-r/
+# Check taxonomy of a single taxon
+# Get the WoRMS ID for a single species – here, Atlantic cod, Gadus morhua:
+  m_sp_aphia <- worrms::wm_name2id(name = "Gadus morhua")
+# Then get the full WoRMS record, as a list by Aphia ID:
+  m_sp_taxo <- worrms::wm_record(id = m_sp_aphia)
+# Or as a tibble by name - here specifying exact match only (fuzzy = FALSE)
+# and restricting to marine species (marine_only = TRUE)
+  m_sp_taxo <- worrms::wm_records_names(name = "Gadus morhua", fuzzy = FALSE, marine_only = TRUE)
+  # substitute on the incorrect species names
+  df_A08$Lat_Species <- gsub("Oncorhyncus gorbuscha","Oncorhynchus gorbuscha",
+       df_A08$Lat_Species)
+  df_A08$Lat_Species <- gsub("Prorocentrum minimum","Prorocentrum cordatum",
+                             df_A08$Lat_Species)
+  # get all the species in the data frame
+  LTSpc <- unique(df_A08$Lat_Species)
+  # Get taxonomy for multiple species
+# Start with a data frame of species names:
+  m_sp <- data_frame(sciname = c(LTSpc))
+# Then get the WoRMS records for each:
+  m_sp_taxo <- worrms::wm_records_names(name = m_sp$sciname, fuzzy = FALSE, marine_only = TRUE)
+# For 'n' species this returns a list of 'n' tables. Convert these into a 
+  # single table with 'n' rows:
+  m_sp_taxo <- bind_rows(m_sp_taxo)
+# exclude taxonomically unaccepted names
+  m_sp_taxo <- m_sp_taxo[!grepl("unaccept",m_sp_taxo$status),]
+# define columns to keep
+ctkeep <- c( "AphiaID", "scientificname", "authority", "status", 
+             "valid_AphiaID", "valid_name", 
+             "valid_authority", "parentNameUsageID", "kingdom", "phylum", 
+             "class", "order", "family", "genus")
+# only keep specified columns
+m1_sp_taxo <- m_sp_taxo[ctkeep]
+# copy and rename column
+m1_sp_taxo$Lat_Species <- m1_sp_taxo$scientificname
+# join the data frames
+df_A08 <- df_A08 %>% dplyr::left_join(m1_sp_taxo,
+                            by="Lat_Species")
+# prepare taxonomical group_catagories for the species
+# to be able to assign gradient colors to the stacked bar plots
+#https://stackoverflow.com/questions/49818271/stacked-barplot-with-colour-gradients-for-each-bar
+library(ggplot2)
+# make a column with class and order combined
+df_A08$class_order <- paste0(df_A08$class,"_" ,df_A08$order)
+# make a column with phylum, class and order combined
+df_A08$phylum_class_order <- paste0(df_A08$phylum,"_",df_A08$class,"_" ,df_A08$order)
+df_A08$phylum_class_order_latspc <- paste0(df_A08$phylum,"_",df_A08$class,"_" ,df_A08$order,"_",df_A08$Lat_Species)
+df_A08$class_order_latspc <- paste0(df_A08$class,"_" ,df_A08$order,"_",df_A08$Lat_Species)
+# make a column with kingdom, phylum, and class
+df_A08$kingdom_phylum_class <- paste0(df_A08$kingdom,"_",df_A08$phylum,"_",df_A08$class)
+# combine categories
+df_A08$group <- paste0(df_A08$phylum, "-", 
+                       df_A08$class_order,
+                        sep = "")
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# start - function 'ColourPalleteMulti'
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ColourPalleteMulti <- function(df, group, subgroup){
+  # Find how many colour categories to create and the number of colours in each
+  categories <- aggregate(as.formula(paste(subgroup,
+                                           group, sep="~" )), 
+                          df, function(x) length(unique(x)))
+  category.start <- (scales::hue_pal(l = 100)(nrow(categories))) # Set the top of the colour pallete
+  category.end  <- (scales::hue_pal(l = 30)(nrow(categories))) # set the bottom
+  
+  # Build Colour pallette
+  colours <- unlist(lapply(1:nrow(categories),
+                           function(i){
+                             colorRampPalette(colors = c(category.start[i], 
+                                                         category.end[i]))(categories[i,2])}))
+  return(colours)
+}
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# end - function 'ColourPalleteMulti'
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# Build the colour pallete using the function
+col.phycla <-ColourPalleteMulti(df_A08, "phylum", "class_order_latspc")
+
+# combinde columns to a data frame
+class_order_latspc <- (unique(df_A08$class_order_latspc))
+df_cfphy <- as.data.frame(cbind(class_order_latspc,col.phycla))
 
 library(ggplot2)
 library(tidyverse)
@@ -294,32 +402,71 @@ toexpr <- function(x, plain = NULL) {
   }
   as.expression(unname(Map(function(f,v) substitute(f(v), list(f=as.name(f), v=as.character(v))), getfun(x), x)))
 }
-
+# get the years
+yer <- unique(df_A08$yer)
+nyer <- length(yer)
+emptyer <- rep(" ",nyer)
+sqfyer <- seq(1,nyer,1)
+#yer <- c(rep(yer,2))
+yer <- yer[(order(yer))]
+yer_and_empt <- c(emptyer,yer)
+seqfyeandempt <- c(rep(sqfyer,2))
+df_sqfyer <- as.data.frame(cbind(yer_and_empt,seqfyeandempt))
+df_sqfyer <- df_sqfyer[order(df_sqfyer$seqfyeandempt),]
+yere <- df_sqfyer$yer_and_empt
+# substitute in the 'source'
+df_A08$source <- gsub("iNat" ,"iNaturalist" ,df_A08$source)
+df_A08$source <- gsub("arter\\.dk" ,"www.arter.dk" ,df_A08$source)
+# reorder the data frame by multiple columns
+# to ensure the colors match the 
+df_A08 <- df_A08[with(df_A08, order(df_A08$phylum_class_order_latspc, df_A08$Lat_Species)), ]
 # make stacked bar plot
-p05 <- ggplot(df_A08, aes(fill=Lat_Species, 
+p05 <- ggplot(df_A08, aes(#fill=Lat_Species, 
+                          fill = phylum_class_order_latspc,
                             y=tot_sum, 
                             x=yer_ssn.per)) + 
   # also see: https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/
-  theme_void() +
+  #theme_void() +
+  theme_bw() +
+  # change the header on the facet wrap
+  # https://stackoverflow.com/questions/41631806/change-facet-label-text-and-background-colour
+  theme(strip.background =element_rect(colour = 'white',fill="white"))+
+  theme(strip.text = element_text(colour = 'black', face="bold", hjust=0.1) ) +
+  # Remove grid, background color, and top and right borders from ggplot2
+  # https://stackoverflow.com/questions/10861773/remove-grid-background-color-and-top-and-right-borders-from-ggplot2
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) +
   # make the x-axis labels rotate 90 degrees
   theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
+  scale_x_discrete(label = yere) +
   # alter the labels along the x- and y- axis
   labs(y = "positive miljø-DNA detektioner", x = "årstal og sæson") + 
-  guides(fill=guide_legend(title="Latinsk artsnavn")) +
+  guides(fill=guide_legend(title="Latinsk artsnavn",
+                           ncol=1)) +
+  
   #Arrange in facets
-  ggplot2::facet_wrap( ~ source,
+  ggplot2::facet_wrap( ~ source+ssn.per,
                        drop=FALSE,
                        dir="h",
-                       ncol = 1,
+                       ncol = 2,
                        labeller = label_bquote(cols =
-                                                 .(as.character(source))
+                          .(as.character(paste0(source,", ",ssn.per)))
                        ) ) +
+  # change the x axis
+  #scale_x_discrete(name="year", breaks=c(as.character(yer))) +
   # use a manual  fill color scale, and make use of the function above for
   # making the species names in italics
-  scale_fill_manual(values=cbbPalette,
-                    labels = toexpr(unique(df_A08$Lat_Species), plain = 'Wt')) +
+  # set the colors for the fill manually
+  scale_fill_manual(values=c(col.phycla),
+                    labels = toexpr(unique(df_A08$Lat_Species), 
+                                    plain = 'Wt')) +
+  # scale_fill_manual(values=cbbPalette,
+  #                   labels = toexpr(unique(df_A08$Lat_Species), plain = 'Wt')) +
   # geom_text(data=dfg05.01,aes(label = count), vjust = -0.2) +
-  geom_bar(position='stack', stat='identity')
+  geom_bar(position='stack', stat='identity',  width = 1.8)
 
 #p05
 
@@ -327,6 +474,154 @@ bSaveFigures<-T
 if(bSaveFigures==T){
   ggsave(plot = p05, 
          filename = paste0(wd00_wd08,"/Fig13_v01_stckbar_plot_NISrecords_from_arterdk_iNat_MONIS6_2021_to_2023.png"),
-         width=210,height=297,
+         width=210,height=297*0.7,
          units="mm",dpi=300)
+}
+
+# join the data frames
+df_A07 <- df_A07 %>% dplyr::left_join(m1_sp_taxo,
+                                      by="Lat_Species")
+# make a column with class and order combined
+df_A07$class_order <- paste0(df_A07$class,"_" ,df_A07$order)
+# make a column with phylum, class and order combined
+df_A07$phylum_class_order <- paste0(df_A07$phylum,"_",df_A07$class,"_" ,df_A07$order)
+df_A07$phylum_class_order_latspc <- paste0(df_A07$phylum,"_",df_A07$class,"_" ,df_A07$order,"_",df_A07$Lat_Species)
+df_A07$class_order_latspc <- paste0(df_A07$class,"_" ,df_A07$order,"_",df_A07$Lat_Species)
+# make a column with kingdom, phylum, and class
+df_A07$kingdom_phylum_class <- paste0(df_A07$kingdom,"_",df_A07$phylum,"_",df_A07$class)
+# combine categories
+df_A07$group <- paste0(df_A07$phylum, "-", 
+                       df_A07$class_order,
+                       sep = "")
+# combine data frames using lefy join to get colors added to the data frame
+df_A09 <- df_A07 %>% dplyr::left_join(df_cfphy,
+                            by="class_order_latspc")
+
+# combine data frames using lefy join to get colors added to the data frame
+df_A08 <- df_A08 %>% dplyr::left_join(df_cfphy,
+                                      by="class_order_latspc")
+# find the minimum and maximum for the years sampled
+mn.yer <- min(df_A08$yer)
+mx.yer <- max(df_A08$yer)
+# identify which rows have detections, that occurs in how many rows
+cntsA08 <- plyr::ddply(df_A08, .(df_A08$ssn.per, 
+                           df_A08$source,
+                           df_A08$Lat_Species), nrow)
+names(cntsA08) <- c("ssn.per","source", "Lat_Species", "Freq_pYer_p_src")
+# join the data frame with all observations with the frequency count 
+# per season per species per source
+df_A08 <- dplyr::left_join(df_A08, 
+                 cntsA08, by = c("ssn.per","source", "Lat_Species"))
+# exclude rows if the 'Freq_pYer_p_src' count is 2 or less, as it is not 
+# possible to infer linear regression on less than 3 points, so there is no
+# point in including such points
+df_A08 <- df_A08[(df_A08$Freq_pYer_p_src>=3),]
+# ensure the package required for plotting is loaded
+library(ggplot2)
+# subset to only comprise one group
+phylum.rec <- unique(df_A08$phylum)
+# make a sequence for this range
+nfPhy<- seq(1,length(phylum.rec),1)
+# iterate over numbers for phylum
+for (phrc in nfPhy)
+{
+  print(phrc)
+  #}
+  # get the phylum name with an underscore
+  phylum_wu <- gsub(" ","_",phylum.rec[phrc])
+  # subset the datafram
+  df_A10 <- df_A08[(df_A08$phylum==phylum_wu),]
+  # exclude rows if zero
+  # No need to plot points that have zero detections
+  df_A10 <- df_A10[!(df_A10$tot_sum==0),]
+  # work out an upper level for the plot
+  mx_totsum <- max(df_A10$tot_sum)
+  # use the plyr function to get the upper 10th level see this question:
+  # https://stackoverflow.com/questions/6461209/how-to-round-up-to-the-nearest-10-or-100-or-x
+  max_no_of_detct <- plyr::round_any(mx_totsum, 10, f = ceiling)  
+  
+    # check if the data frame is empty
+  if (!empty(df_A10)==T)
+    # if it is not empty , then make a plot
+  {
+    #create plot to visualize fitted linear regression model
+    p05 <- ggplot(df_A10,aes(x=yer,
+                             y=tot_sum,
+                             color=phylum_class_order_latspc,
+                             fill=phylum_class_order_latspc),
+                  shape=21,
+                  size=2)+
+      geom_point() +
+      # add a linear regression model with standard error that has a
+      # level of 0.90
+      geom_smooth(method = "lm", se=T, level = 0.90) +
+      #theme(legend.position="none") +
+      #Arrange in facets
+      ggplot2::facet_wrap( ~ source+ssn.per,
+                           drop=FALSE,
+                           dir="h",
+                           ncol = 2,
+                           labeller = label_bquote(cols =
+                                                     .(as.character(paste0(source,", ",ssn.per)))
+                           ) ) +
+      # use previous defined scale of colors
+      scale_fill_manual(values=c(cbbPalette),
+                        labels = toexpr(unique(df_A10$Lat_Species), 
+                                        plain = 'Wt') ) +
+      scale_color_manual(values=c(cbbPalette),
+                         labels = toexpr(unique(df_A10$Lat_Species), 
+                                         plain = 'Wt')) +
+      # also see: https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/
+      theme_bw() +
+      # change the header on the facet wrap
+      # https://stackoverflow.com/questions/41631806/change-facet-label-text-and-background-colour
+      theme(strip.background =element_rect(colour = 'white',fill="white"))+
+      theme(strip.text = element_text(colour = 'black', face="bold", hjust=0.1) ) +
+      #theme_void() +
+      # Remove grid, background color, and top and right borders from ggplot2
+      # https://stackoverflow.com/questions/10861773/remove-grid-background-color-and-top-and-right-borders-from-ggplot2
+      theme(axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.background = element_blank()) +
+      # set the lower and upper limit for the axis
+      coord_cartesian(ylim = c(0, max_no_of_detct))  +
+      
+      # make the x-axis labels rotate 90 degrees
+      theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
+      # make the x axis have breaks that are represented every 1 increment      
+      scale_x_continuous(breaks=seq(mn.yer, mx.yer, 1)) +
+      # both 'fill' and 'color' needs to be changed
+      guides(fill=guide_legend(title="Latinsk artsnavn",
+                               ncol=1),
+             color=guide_legend(title="Latinsk artsnavn",
+                                ncol=1)) +
+      
+      # alter the labels along the x- and y- axis
+      labs( x = "årstal og sæson") +
+      # break the label across more lines, this website recommends
+      # more complicated approaches, 
+      # https://www.gangofcoders.net/solution/ggplot2-two-line-label-with-expression/
+      #Use atop to fake a line break
+      ylab(expression(atop("fund eller detektioner", 
+                             paste("per sæson"))))
+    #p05
+    #see this website: https://stackoverflow.com/questions/5812493/adding-leading-zeros-using-r
+    ins <- stringr::str_pad(phrc, 2, pad = "0")
+    # find out how many 'source' that contribute to the plot with facet wrap plots
+    # and use this factor to calculate a factor that can be used for 
+    # setting the height of the plot
+    nrw_hfplt <- length(unique(df_A10$source))
+    fct.hght <- 1/(3/nrw_hfplt)
+    
+    # evaluate whether to store the plot
+    bSaveFigures<-T
+    if(bSaveFigures==T){
+      ggsave(plot = p05, 
+             filename = paste0(wd00_wd08,"/Fig14_v",ins,"_linear_regr_",phylum_wu,".png"),
+             width=210,height=297*0.6*fct.hght,
+             units="mm",dpi=300)
+    }
+  }
 }
