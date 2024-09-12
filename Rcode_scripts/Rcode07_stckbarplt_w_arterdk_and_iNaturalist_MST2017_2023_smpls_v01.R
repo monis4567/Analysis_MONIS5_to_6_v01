@@ -653,9 +653,10 @@ LtSp.ssn.src <- unique(df_A08$LtSp.ssn.src)
 # and count them, to make a sequence of numbers
 nLtSp.ssn.src <- length(LtSp.ssn.src)
 sqLtSp.ssn.src <- seq(1,nLtSp.ssn.src,1)
-#
-
+# make an empty list to add generated data frames into
 lst_lm_spc.ssn.src <- list()
+# iterate over the sequence of numbers reflecting the species, seasons and
+# source
 for (i in sqLtSp.ssn.src)
   {
   #i <- 59
@@ -739,13 +740,15 @@ colnames(df_lm_sum02) <- c( "Latinsk artsnavn",
 library(htmlTable)
 # make a table caption
 capt_tbl02 <-        paste0(
-  "Tabel 1. Værdier for lineær regressionsmodeller for antallet af fund af ikke-hjemmehørende",
+  "Tabel 1. Værdier for lineær regressionsmodeller for antallet af fund af ",
+  "ikke-hjemmehørende",
   " arter per år per sæson for MONIS6 projektet og to hjemmesider (arter.dk og iNaturalist.org). ",
   "Skæring og hældning er for den estimerede lineære model. Vurderingen om",
   " den lineære sammenhæng mellem antallet af fund og året er gjort en med p-værdi",
   " på 0,05 eller mindre. For de arter hvor der er en en sammenhæng er angiver kolonnen ",
   "'singifikans vurdering' om den lineære model er signifikant eller ej.",
-  " Ikke alle arter, sæsoner og kilder er inkluderet i tabellen, da der for nogle arter og nogle",
+  " Ikke alle arter, sæsoner og kilder er inkluderet i tabellen, da der for nogle ",
+  "arter og nogle",
   " kilder ikke var tre eller flere datapunkter at udføre lineær regression på."
 )
 # show the table
@@ -769,6 +772,222 @@ df_lm_sum02MONIS6 <- df_lm_sum02[grepl("MONIS6",df_lm_sum02$`kilde for fund`),]
 # check if any from MONIS6 are significant
 df_lm_sum02MONIS6 <- df_lm_sum02MONIS6[!grepl("ikke",df_lm_sum02MONIS6$`sigifikans vurdering`),]
 
+
+#_______________________________________________________________________________
+#_______________________________________________________________________________
+# find the minimum and maximum for the years sampled
+mn.yer <- min(df_A08$yer)
+mx.yer <- max(df_A08$yer)
+# exclude rows if zero
+# No need to plot points that have zero detections
+# and no need to evaluate on the zero detections
+df_A08 <- df_A08[!(df_A08$tot_sum==0),]
+# ensure the package required for plotting is loaded
+library(ggplot2)
+
+#create plot to visualize fitted linear regression model
+p05 <- ggplot(df_A08,aes(x=yer,
+                             y=tot_sum,
+                             color=source,
+                             fill=source),
+                  shape=21,
+                  size=2) +
+      geom_point() +
+      # add a linear regression model with standard error that has a
+      # level of 0.90
+      geom_smooth(method = "lm", se=T, level = 0.90) +
+      #theme(legend.position="none") +
+      #Arrange in facets
+      ggplot2::facet_wrap( ~ ssn.per,
+                           drop=FALSE,
+                           dir="h",
+                           ncol = 2,
+                           labeller = label_bquote(cols =
+                                .(as.character(paste0(ssn.per)))
+                           ) ) +
+      # use previous defined scale of colors
+      scale_fill_manual(values=c(cbbPalette) ) +
+      scale_color_manual(values=c(cbbPalette)) +
+      # also see: https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/
+      theme_bw() +
+      # change the header on the facet wrap
+      # https://stackoverflow.com/questions/41631806/change-facet-label-text-and-background-colour
+      theme(strip.background =element_rect(colour = 'white',fill="white"))+
+      theme(strip.text = element_text(colour = 'black', face="bold", hjust=0.1) ) +
+      #theme_void() +
+      # Remove grid, background color, and top and right borders from ggplot2
+      # https://stackoverflow.com/questions/10861773/remove-grid-background-color-and-top-and-right-borders-from-ggplot2
+      theme(axis.line = element_line(colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.background = element_blank()) +
+      # set the lower and upper limit for the axis
+      #coord_cartesian(ylim = c(0, max_no_of_detct))  +
+      
+      # make the x-axis labels rotate 90 degrees
+      theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
+      # make the x axis have breaks that are represented every 1 increment      
+      scale_x_continuous(breaks=seq(mn.yer, mx.yer, 1)) +
+      # both 'fill' and 'color' needs to be changed
+      guides(fill=guide_legend(title="kilde for fund",
+                               ncol=1),
+             color=guide_legend(title="kilde for fund",
+                                ncol=1)) +
+      
+      # alter the labels along the x- and y- axis
+      labs( x = "årstal og sæson") +
+      # break the label across more lines, this website recommends
+      # more complicated approaches, 
+      # https://www.gangofcoders.net/solution/ggplot2-two-line-label-with-expression/
+      #Use atop to fake a line break
+      ylab(expression(atop("fund eller detektioner", 
+                           paste("per sæson"))))
+    #p05
+    #see this website: https://stackoverflow.com/questions/5812493/adding-leading-zeros-using-r
+    ins <- stringr::str_pad(phrc, 2, pad = "0")
+    # find out how many 'source' that contribute to the plot with facet wrap plots
+    # and use this factor to calculate a factor that can be used for 
+    # setting the height of the plot
+    
+    # evaluate whether to store the plot
+    bSaveFigures<-T
+    if(bSaveFigures==T){
+      ggsave(plot = p05, 
+             filename = paste0(wd00_wd08,"/Fig15_v",ins,"_linear_regr_per_source.png"),
+             width=210,height=297*0.6,
+             units="mm",dpi=300)
+    }
+
+
+# paste together to have a variable that reflects the source and
+# the season sampled
+df_A08$ssn.src <- paste(df_A08$ssn.per,
+                        df_A08$source,
+                        sep="_")
+# find the unique combinations for season and source
+ssn.src <- unique(df_A08$ssn.src)
+# and count them, to make a sequence of numbers
+nssn.src <- length(ssn.src)
+sqssn.src <- seq(1,nssn.src,1)
+# make an empty list to add generated data frames into
+lst_lm_ssn.src <- list()
+# iterate over the sequence of numbers reflecting the seasons and
+# source
+for (i in sqssn.src)
+{
+  #i <- 6
+  #}
+  osn_src <- ssn.src[i]
+  #print(osn_src)
+  # split the string
+  lngNmspl <- strsplit(as.character(osn_src), "_")
+  # and use the splitted string to get each element
+  ssnNm <- sapply(lngNmspl, "[[", 1)
+  srcNm <- sapply(lngNmspl, "[[", 2)
+  # subset data frame
+  df_A11 <- df_A08[(df_A08$ssn.src==osn_src),]
+  
+  yer.tsm.lm <- lm(tot_sum~ yer, data = df_A11)
+  #cor(x, y)  # calculate correlation between x and y
+  # calculate correlation between tot_sum and yer 
+  cor_yer.tsm.lm <- cor(df_A11$tot_sum, df_A11$yer)  
+  summ.lm_yer.tsm  <-summary(yer.tsm.lm)
+  # get the R2 and adjusted R2 values 
+  adj.r.squared <- summ.lm_yer.tsm$adj.r.squared
+  adj.r.squared <- round(adj.r.squared, digits = 2)
+  r.squared <- summ.lm_yer.tsm$r.squared
+  r.squared <- round(r.squared, digits = 2)
+  # get the intercept and the increment and p-values
+  intcpt <- summ.lm_yer.tsm$coefficients[1,1]
+  intcpt <- round(intcpt, digits = 2)
+  incrm <- summ.lm_yer.tsm$coefficients[2,1]
+  incrm <- round(incrm, digits = 2)
+  pval_lm_yer.tsm <- summ.lm_yer.tsm$coefficients[2,4]
+  pval_lm_yer.tsm <- round(pval_lm_yer.tsm, digits = 2)
+  
+  # combine values in to a data frame
+  df_lm_yer.tsm <- as.data.frame(cbind(intcpt,
+                                       incrm,
+                                       r.squared,
+                                       adj.r.squared,
+                                       pval_lm_yer.tsm,
+                                       osn_src,
+                                       ssnNm,
+                                       srcNm
+  )) 
+  # collect the data frame in a list
+  lst_lm_ssn.src[[i]] <- df_lm_yer.tsm
+  # end iteration over seq numbers for latinspc_sssn_source
+}
+
+# combine the list of data frames into a data frame
+df_A11_lm_sum <- dplyr::bind_rows(lst_lm_ssn.src, .id = "column_label")
+# exclude if  'r.squared' is NaN
+df_A11_lm_sum <- df_A11_lm_sum[!(grepl("NaN",df_A11_lm_sum$r.squared)),]
+#
+#View(df_A11_lm_sum)
+
+
+# re-order the data frame by species, by season sampled, and then by
+# source
+df_A11_lm_sum <- df_A11_lm_sum %>% dplyr::arrange(ssnNm, srcNm)
+# Check if the 
+df_A11_lm_sum$sgnfpval <- df_A11_lm_sum$pval_lm_yer.tsm<=0.05
+df_A11_lm_sum$sgnf_eval <- "ikke sign"
+df_A11_lm_sum$sgnf_eval[(df_A11_lm_sum$sgnfpval==T)] <- "sign"
+df_lm_sum <- df_A11_lm_sum[(df_A11_lm_sum$sgnfpval==T),]
+# define columns to keep
+ctkeep <- c("ssnNm", "srcNm", 
+            "intcpt", "incrm", "r.squared", "adj.r.squared", 
+            "pval_lm_yer.tsm","sgnf_eval")
+# only keep specified columns
+df_lm_sum02 <- df_A11_lm_sum[ctkeep]
+# change column headers
+colnames(df_lm_sum02) <- c(
+                            "sæson",
+                            "kilde for fund",
+                            "skæring",
+                            "hældning",
+                            "R2",
+                            "jR2",
+                            "p-værdi",
+                            "sigifikans vurdering")
+#
+library(htmlTable)
+# make a table caption
+capt_tbl02 <-        paste0(
+  "Tabel 2. Værdier for lineær regressionsmodeller for antallet af samtlige",
+  " overvågede ikke-hjemmehørende",
+  " arter per år per sæson for MONIS6 projektet og to hjemmesider (arter.dk og iNaturalist.org). ",
+  "Skæring og hældning er for den estimerede lineære model. Vurderingen om",
+  " den lineære sammenhæng mellem antallet af fund og året er gjort en med p-værdi",
+  " på 0,05 eller mindre. For de arter hvor der er en en sammenhæng er angiver kolonnen ",
+  "'singifikans vurdering' om den lineære model er signifikant eller ej.",
+  " Ikke alle arter, sæsoner og kilder er inkluderet i tabellen, da der for nogle ",
+  "arter og nogle",
+  " kilder ikke var tre eller flere datapunkter at udføre lineær regression på."
+)
+# show the table
+t.HTML06 <- df_lm_sum02 %>%
+  addHtmlTableStyle(align = "r") %>%
+  htmlTable(caption = capt_tbl02, rnames = FALSE)
+t.HTML06
+
+# Make a filename to store the html table with  values
+filNm.for_html <- paste0(
+  wd00_wd08,
+  "/Table02_v01",
+  "_html_table_linear_regress_model",
+  ".html"
+)
+# save the html table
+htmltools::save_html(t.HTML06, file = filNm.for_html)
+
+# limit to only MONIS6 evaluated
+df_lm_sum02MONIS6 <- df_lm_sum02[grepl("MONIS6",df_lm_sum02$`kilde for fund`),]
+# check if any from MONIS6 are significant
+df_lm_sum02MONIS6 <- df_lm_sum02MONIS6[!grepl("ikke",df_lm_sum02MONIS6$`sigifikans vurdering`),]
 
   #
   
