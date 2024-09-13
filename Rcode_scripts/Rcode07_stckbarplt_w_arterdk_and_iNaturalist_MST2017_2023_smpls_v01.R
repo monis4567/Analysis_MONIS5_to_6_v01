@@ -1056,11 +1056,98 @@ outflNm <- paste0(wd00_wd08,"/Table07_MONIS6_records_2017_2023.csv")
 write.table(df_A11,outflNm, sep=";")
 #
 
+LtSpc <- unique(df_A11$Lat_Species)
 
+LtSpc <- c(#"Bonnemaisonia hamifera", "Callinectes sapidus",
+  #"Colpomenia peregrina", 
+  #"Cyprinus carpio", "Hemigrapsus sanguineus", "Hemigrapsus takanoi", 
+  "Karenia mikimotoi",
+  "Magallana gigas", "Mnemiopsis leidyi", 
+  "Mya arenaria", 
+  #"Neogobius melanostomus", "Oncorhynchus mykiss", 
+  "Prorocentrum cordatum", 
+  #"Pseudochattonella farcimen",
+  "Pseudochattonella verruculosa")
 
+LtSpc <- paste(LtSpc, collapse = "|")
 #
+df_A12 <- df_A11[grepl(LtSpc,df_A11$Lat_Species),]
+df_A12$tot_sum.orgFnd
+#
+Lat_Species <- df_A12$Lat_Species
+yer <- df_A12$yer
+tot_sum.orgFnd <- df_A12$tot_sum.orgFnd
+tot_sum_orgsrch <- df_A12$tot_sum_orgsrch
+ssn.per <- df_A12$ssn.per
+#
+df_A12<- structure(list(Lat_Species = c("Karenia mikimotoi", "Karenia mikimotoi", 
+                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
+                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
+                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
+                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Magallana gigas", 
+                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Magallana gigas", 
+                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Mnemiopsis leidyi", 
+                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
+                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
+                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
+                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
+                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
+                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
+                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
+                               "Mya arenaria", "Prorocentrum cordatum", "Prorocentrum cordatum", 
+                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
+                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
+                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
+                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
+                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
+                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
+                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
+                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
+                               "Pseudochattonella verruculosa"), yer = c(2017L, 2019L, 2019L, 
+                                                                         2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 2023L, 2023L, 2018L, 
+                                                                         2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2022L, 2022L, 2023L, 
+                                                                         2023L, 2017L, 2018L, 2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 
+                                                                         2021L, 2022L, 2022L, 2023L, 2023L, 2017L, 2018L, 2018L, 2019L, 
+                                                                         2019L, 2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 2023L, 2023L, 
+                                                                         2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 
+                                                                         2023L, 2023L, 2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2021L, 
+                                                                         2022L, 2022L, 2023L, 2023L), ssn.per = c("jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jan - jun", "jul - nov", 
+                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
+                                                                                                                  "jul - nov", "jan - jun", "jul - nov"), tot_sum.orgFnd = c(1, 
+                                                                                                                                                                             5, 7, 13, 9, 2, 11, 3, 8, 2, 8, 1, 1, 5, 1, 3, 2, 1, 2, 2, 3, 
+                                                                                                                                                                             2, 6, 2, 17, 8, 17, 17, 22, 12, 20, 7, 20, 19, 19, 3, 16, 5, 
+                                                                                                                                                                             26, 12, 23, 13, 10, 4, 18, 8, 20, 14, 2, 13, 18, 12, 21, 2, 17, 
+                                                                                                                                                                             3, 21, 5, 19, 1, 7, 9, 4, 4, 6, 9, 5, 3, 3, 2), tot_sum_orgsrch = c(11, 
+                                                                                                                                                                                                                                                 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 37, 21, 36, 20, 30, 22, 
+                                                                                                                                                                                                                                                 27, 27, 21, 24, 19, 11, 27, 19, 36, 20, 30, 22, 27, 20, 27, 21, 
+                                                                                                                                                                                                                                                 24, 19, 11, 27, 19, 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 38, 
+                                                                                                                                                                                                                                                 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 27, 36, 20, 30, 22, 27, 
+                                                                                                                                                                                                                                                 20, 27, 21, 24, 19)), row.names = c(NA, -70L), class = c("tbl_df", 
+                                                                                                                                                                                                                                                                                                          "tbl", "data.frame"))
 
+library(ggplot2)
+  # make stacked bar plot
+p05 <- ggplot(df_A12, aes(fill=Lat_Species, 
+                            y=tot_sum.orgFnd, 
+                            x=yer)) + 
+  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
+  labs(y = "positive miljø-DNA detektioner", x = "årstal og sæson") + 
+  guides(fill=guide_legend(title="Latinsk artsnavn")) +
+  geom_bar(position='stack', stat='identity')
 
+p05
 #
 
 #
