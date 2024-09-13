@@ -500,7 +500,7 @@ df_A07$kingdom_phylum_class <- paste0(df_A07$kingdom,"_",df_A07$phylum,"_",df_A0
 df_A07$group <- paste0(df_A07$phylum, "-", 
                        df_A07$class_order,
                        sep = "")
-# combine data frames using lefy join to get colors added to the data frame
+# combine data frames using left join to get colors added to the data frame
 df_A09 <- df_A07 %>% dplyr::left_join(df_cfphy,
                             by="class_order_latspc")
 
@@ -991,4 +991,50 @@ df_lm_sum02MONIS6 <- df_lm_sum02MONIS6[!grepl("ikke",df_lm_sum02MONIS6$`sigifika
 
   #
   
-  
+#_______________________________________________________________________________
+
+
+library(dplyr)
+# make a column that evaluates the season sampled
+df_A07$ssn.no <- NA
+# evaluate on the season column to add a number version of the season
+df_A07$ssn.no[(df_A07$mnt<=6)] <- "1st"
+df_A07$ssn.no[(df_A07$mnt>6)]  <- "2nd"
+#
+df_A08 <- df_A07
+#
+df_A08$orgFnd2 <- 1
+df_A08$orgFnd2[grepl("ingen",df_A08$reccat)] <- 0
+df_A08$orgsrch <- 1
+#
+df_A09 <- df_A08 %>%
+  dplyr::select(Lat_Species,yer_ssn.per,ssn.per,yer,orgsrch, source) %>%
+  dplyr::group_by(Lat_Species,yer_ssn.per,yer,ssn.per,source) %>%
+  dplyr::summarise(tot_sum_orgsrch = sum(orgsrch)) 
+
+df_A09 <- df_A09 %>% dplyr::arrange(Lat_Species,source,yer_ssn.per)
+# redo the count of organisms found per season per year per species per source
+df_A08 <- df_A07
+#
+df_A08$orgFnd2 <- 1
+df_A08$orgFnd2[grepl("ingen",df_A08$reccat)] <- 0
+# count up all organisms found per species per year and season and source
+df_A08 <- df_A08 %>%
+  dplyr::select(Lat_Species,yer_ssn.per,ssn.per,yer,orgFnd2, source) %>%
+  dplyr::group_by(Lat_Species,yer_ssn.per,yer,ssn.per,source) %>%
+  dplyr::summarise(tot_sum.orgFnd = sum(orgFnd2)) 
+# limit to only required columns
+df_A09 <- tibble(df_A09) %>% select(Lat_Species,yer_ssn.per,source,tot_sum_orgsrch)
+# join data frames to tot_sum of orgFnd per species per year and season and source
+df_A10 <- df_A08 %>% dplyr::left_join(df_A09,
+                     by =c("Lat_Species",
+                           "yer_ssn.per",
+                           "source"),
+                     keep=F)
+# exclude the cpunts where there was no species found 
+df_A10 <- df_A10[!(df_A10$tot_sum.orgFnd==0),]
+
+df_A10$org.sf.prop <- df_A10$tot_sum.orgFnd/df_A10$tot_sum_orgsrch
+
+View(df_A10)
+#
