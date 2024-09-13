@@ -1023,18 +1023,44 @@ df_A08 <- df_A08 %>%
   dplyr::select(Lat_Species,yer_ssn.per,ssn.per,yer,orgFnd2, source) %>%
   dplyr::group_by(Lat_Species,yer_ssn.per,yer,ssn.per,source) %>%
   dplyr::summarise(tot_sum.orgFnd = sum(orgFnd2)) 
+# make sure the table is a table in order to be able to 
+# use the 'dplyr::select' function
+df_A09 <- tidyr::as_tibble(df_A09)
 # limit to only required columns
-df_A09 <- tibble(df_A09) %>% select(Lat_Species,yer_ssn.per,source,tot_sum_orgsrch)
+df_A09 <- df_A09 %>% dplyr::select(Lat_Species,yer_ssn.per,source,tot_sum_orgsrch)
 # join data frames to tot_sum of orgFnd per species per year and season and source
 df_A10 <- df_A08 %>% dplyr::left_join(df_A09,
                      by =c("Lat_Species",
                            "yer_ssn.per",
                            "source"),
                      keep=F)
-# exclude the cpunts where there was no species found 
+
+# exclude the counts where there was no species found 
 df_A10 <- df_A10[!(df_A10$tot_sum.orgFnd==0),]
-
+#
 df_A10$org.sf.prop <- df_A10$tot_sum.orgFnd/df_A10$tot_sum_orgsrch
+df_A11 <- df_A10[(df_A10$source=="MONIS6"),]
+# make sure the table is a table in order to be able to 
+# use the 'dplyr::select' function 
+df_A11 <- tidyr::as_tibble(df_A11)
+# limit to only required columns
+df_A11 <-
+  df_A11 %>% dplyr::select(Lat_Species,
+                          yer,
+                          ssn.per,
+                          tot_sum.orgFnd,
+                          tot_sum_orgsrch )
+# define file name to write data frame out to
+outflNm <- paste0(wd00_wd08,"/Table07_MONIS6_records_2017_2023.csv")
+# write data frame out to file
+write.table(df_A11,outflNm, sep=";")
+#
 
-View(df_A10)
+
+
+#
+
+
+#
+
 #
