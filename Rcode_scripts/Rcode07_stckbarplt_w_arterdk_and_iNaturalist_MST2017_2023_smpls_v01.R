@@ -898,7 +898,7 @@ for (i in sqssn.src)
   adj.r.squared <- round(adj.r.squared, digits = 2)
   r.squared <- summ.lm_yer.tsm$r.squared
   r.squared <- round(r.squared, digits = 2)
-  # get the intercept and the increment and p-values
+ # # get the intercept and the increment and p-values
   intcpt <- summ.lm_yer.tsm$coefficients[1,1]
   intcpt <- round(intcpt, digits = 2)
   incrm <- summ.lm_yer.tsm$coefficients[2,1]
@@ -1079,75 +1079,158 @@ yer <- df_A12$yer
 tot_sum.orgFnd <- df_A12$tot_sum.orgFnd
 tot_sum_orgsrch <- df_A12$tot_sum_orgsrch
 ssn.per <- df_A12$ssn.per
-#
-df_A12<- structure(list(Lat_Species = c("Karenia mikimotoi", "Karenia mikimotoi", 
-                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
-                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
-                               "Karenia mikimotoi", "Karenia mikimotoi", "Karenia mikimotoi", 
-                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Magallana gigas", 
-                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Magallana gigas", 
-                               "Magallana gigas", "Magallana gigas", "Magallana gigas", "Mnemiopsis leidyi", 
-                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
-                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
-                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
-                               "Mnemiopsis leidyi", "Mnemiopsis leidyi", "Mnemiopsis leidyi", 
-                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
-                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
-                               "Mya arenaria", "Mya arenaria", "Mya arenaria", "Mya arenaria", 
-                               "Mya arenaria", "Prorocentrum cordatum", "Prorocentrum cordatum", 
-                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
-                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
-                               "Prorocentrum cordatum", "Prorocentrum cordatum", "Prorocentrum cordatum", 
-                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
-                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
-                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
-                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
-                               "Pseudochattonella verruculosa", "Pseudochattonella verruculosa", 
-                               "Pseudochattonella verruculosa"), yer = c(2017L, 2019L, 2019L, 
-                                                                         2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 2023L, 2023L, 2018L, 
-                                                                         2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2022L, 2022L, 2023L, 
-                                                                         2023L, 2017L, 2018L, 2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 
-                                                                         2021L, 2022L, 2022L, 2023L, 2023L, 2017L, 2018L, 2018L, 2019L, 
-                                                                         2019L, 2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 2023L, 2023L, 
-                                                                         2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2021L, 2022L, 2022L, 
-                                                                         2023L, 2023L, 2018L, 2019L, 2019L, 2020L, 2020L, 2021L, 2021L, 
-                                                                         2022L, 2022L, 2023L, 2023L), ssn.per = c("jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jan - jun", "jul - nov", 
-                                                                                                                  "jan - jun", "jul - nov", "jan - jun", "jul - nov", "jan - jun", 
-                                                                                                                  "jul - nov", "jan - jun", "jul - nov"), tot_sum.orgFnd = c(1, 
-                                                                                                                                                                             5, 7, 13, 9, 2, 11, 3, 8, 2, 8, 1, 1, 5, 1, 3, 2, 1, 2, 2, 3, 
-                                                                                                                                                                             2, 6, 2, 17, 8, 17, 17, 22, 12, 20, 7, 20, 19, 19, 3, 16, 5, 
-                                                                                                                                                                             26, 12, 23, 13, 10, 4, 18, 8, 20, 14, 2, 13, 18, 12, 21, 2, 17, 
-                                                                                                                                                                             3, 21, 5, 19, 1, 7, 9, 4, 4, 6, 9, 5, 3, 3, 2), tot_sum_orgsrch = c(11, 
-                                                                                                                                                                                                                                                 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 37, 21, 36, 20, 30, 22, 
-                                                                                                                                                                                                                                                 27, 27, 21, 24, 19, 11, 27, 19, 36, 20, 30, 22, 27, 20, 27, 21, 
-                                                                                                                                                                                                                                                 24, 19, 11, 27, 19, 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 38, 
-                                                                                                                                                                                                                                                 36, 20, 30, 22, 27, 20, 27, 21, 24, 19, 27, 36, 20, 30, 22, 27, 
-                                                                                                                                                                                                                                                 20, 27, 21, 24, 19)), row.names = c(NA, -70L), class = c("tbl_df", 
-                                                                                                                                                                                                                                                                                                          "tbl", "data.frame"))
 
-library(ggplot2)
-  # make stacked bar plot
-p05 <- ggplot(df_A12, aes(fill=Lat_Species, 
-                            y=tot_sum.orgFnd, 
-                            x=yer)) + 
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
-  labs(y = "positive miljø-DNA detektioner", x = "årstal og sæson") + 
-  guides(fill=guide_legend(title="Latinsk artsnavn")) +
-  geom_bar(position='stack', stat='identity')
 
-p05
+# https://mathstat.slu.edu/~speegle/_book_fall_2021/anova.html
 #
+# make a boxplot to compare mean and variance
+p <- ggplot(df_A08, aes(x=yer_ssn.per, 
+                        y=tot_sum.orgFnd,
+                        color=source)) + 
+  scale_color_manual(values = cbbPalette) +
+  geom_boxplot() 
+# Rotate the box plot
+p <- p + coord_flip()
+p
 
+# see if the counts of organisms are normally distributed
+p <- ggplot(df_A08, aes(x = tot_sum.orgFnd, color=source)) +
+  geom_histogram(bins = 20) +
+  scale_color_manual(values = cbbPalette) +
+  facet_wrap(~yer_ssn.per)
+# see the plot
+p
+
+# http://www.sthda.com/english/wiki/kruskal-wallis-test-in-r
+# Mean plots
+# ++++++++++++++++++++
+# Plot weight by group
+# Add error bars: mean_se
+# (other values include: mean_sd, mean_ci, median_iqr, ....)
+#install.packages("ggpubr")
+library("ggpubr")
+p <- ggpubr::ggline(df_A08, x = "yer_ssn.per", y = "tot_sum.orgFnd", 
+       add = c("mean_se", "jitter"), 
+        color="source",
+        palette = c(cbbPalette),
+       ylab = "total sum of organisms found", xlab = "year and season") 
+# see the plot
+p
+# re order the data frame by the columns
+df_A08 <- df_A08 %>% plyr::arrange(yer,yer_ssn.per)
+# see this website on how to use 'ggpubr' 
+# https://rpkgs.datanovia.com/ggpubr/index.html
+# Box plots with jittered points
+# :::::::::::::::::::::::::::::::::::::::::::::::::::
+# Change outline colors by groups: dose
+# Use custom color palette
+# Add jitter points and change the shape by groups
+p <- ggpubr::ggboxplot(df_A08, x = "yer_ssn.per", y = "tot_sum.orgFnd", 
+               color = "source", 
+               palette =c(cbbPalette),
+               add = "jitter", shape = "source")
+
+# Facet a ggpubr-ggplot into Multiple Panels
+p <- facet(p + theme_bw(), facet.by = "source", 
+           ncol = 1,
+           strip.text = element_text(colour = 'black', face="bold", hjust=0.1),
+           #short.panel.labs = FALSE,   # Allow long labels in panels
+           panel.labs.background = list(fill = "white",
+                                        color = "white") )
+p
+# notice that further modification of a 'ggpubr' must happen
+# outside the code that calls the initial plot, see:
+# https://stackoverflow.com/questions/76381758/why-do-i-keep-getting-an-error-about-operations-possible-only-for-numeric-logi
+p <- p + rotate_x_text(angle = 90)
+p
+# Add p-values comparing groups
+# Specify the comparisons you want
+# make a vector with all years and seasons
+al.yssn <- unique(df_A08$yer_ssn.per)
+# get the last elements of the vector and the first elements
+lstyer <- tail(al.yssn, n=5L)
+fstyer <- head(al.yssn, n=5L)
+
+lstyer<- lstyer[4:5]
+fstyer<- fstyer[2:3]
+# place them in a vector
+my_cmp <- list( c(lstyer[2],fstyer[1]), c(lstyer[1],fstyer[2]) )
+
+# use the vector for making the comparisons
+p <- p + stat_compare_means(comparisons = my_cmp)+ # Add pairwise comparisons p-value
+  stat_compare_means(label.y = 50)                   # Add global p-value
+# 
 #
+bSaveFigures<-T
+if(bSaveFigures==T){
+  ggsave(plot = p, 
+         filename = paste0(wd00_wd08,"/Fig16_v01_kruskall_wallis_test_",
+                           "compare_detected_2017_to_2023.png"),
+         width=210,height=297,
+         #width=210*0.8,height=297,
+         #width=297,height=210,
+         #width=297,height=210,
+         #width=1.4*297,height=210,
+         units="mm",dpi=300)
+}
+
+#subset the data frame
+df_A13 <- df_A08[grepl("MONIS6",df_A08$source),]
+# df_A13 <- df_A08[grepl("iNat",df_A08$source),]
+# df_A13 <- df_A08[grepl("arter",df_A08$source),]
+#perform Kruskal-Wallis Test 
+kruskal.test(tot_sum.orgFnd ~ yer_ssn.per, data = df_A13) 
+#Kruskal-Wallis rank sum test
+
+# compare the species detected
+df_A09 <- df_A08[grepl("MONIS6",df_A08$source),]
+# re order the data frame by the columns
+df_A09 <- df_A09 %>% plyr::arrange(Lat_Species,yer,yer_ssn.per)
+
+df_A10 <- df_A09 %>%
+  #dplyr::select(Lat_Species,yer_ssn.per,ssn.per,yer,orgsrch, source) %>%
+  dplyr::group_by(Lat_Species) %>%
+  dplyr::summarise(tot_sum_orgsrch = sum(tot_sum.orgFnd)) 
+# find the species that have at least 3 records across  all
+# rows, as it is not possible to do statistics on less
+LtSpc.zero <- df_A10$Lat_Species[(df_A10$tot_sum_orgsrch>=3)]
+LtSpc.zero <- paste(LtSpc.zero, collapse = "|")
+# then exclude these species with zero records
+df_A09 <- df_A09[grepl(LtSpc.zero,df_A09$Lat_Species),]
+#
+upp.y.lvl <- max(df_A09$tot_sum.orgFnd)+1
+# Add jitter points and change the shape by groups
+p <- ggpubr::ggboxplot(df_A09, x = "yer_ssn.per", y = "tot_sum.orgFnd", 
+                       color = "Lat_Species", 
+                       ylim = c(0, upp.y.lvl),
+                       palette =c(cbbPalette),
+                       add = "jitter", shape = "Lat_Species")
+
+# Facet a ggpubr-ggplot into Multiple Panels
+p <- facet(p + theme_bw(), facet.by = c("Lat_Species","ssn.per"),
+           ncol = 2,
+           strip.text = element_text(colour = 'black', face="bold", hjust=0.1),
+           #short.panel.labs = FALSE,   # Allow long labels in panels
+           panel.labs.background = list(fill = "white",
+                                        color = "white") )
+# https://stackoverflow.com/questions/76381758/why-do-i-keep-getting-an-error-about-operations-possible-only-for-numeric-logi
+p <- p + rotate_x_text(angle = 90)
+
+# use the vector for making the comparisons
+p <- p + stat_compare_means(comparisons = my_cmp)+ # Add pairwise comparisons p-value
+  stat_compare_means(label.y = 50)                   # Add global p-value
+# 
+#p
+#
+bSaveFigures<-T
+if(bSaveFigures==T){
+  ggsave(plot = p, 
+         filename = paste0(wd00_wd08,"/Fig17_v01_kruskall_wallis_test_",
+                           "compare_only_MONIS6_detected_2017_to_2023.png"),
+         width=210,height=297*1.2,
+         #width=210*0.8,height=297,
+         #width=297,height=210,
+         #width=297,height=210,
+         #width=1.4*297,height=210,
+         units="mm",dpi=300)
+}
