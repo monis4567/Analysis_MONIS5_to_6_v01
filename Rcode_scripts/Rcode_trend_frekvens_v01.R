@@ -134,6 +134,6 @@ p <- ggplot(dff) +
         legend.position="bottom",
         strip.text = element_text(hjust = 0))
 
-ggsave(p, file="cjm/trend_frekvens.png", height=20, width=20, units="cm", dpi=300, bg="white")
+#ggsave(p, file="cjm/trend_frekvens.png", height=20, width=20, units="cm", dpi=300, bg="white")
 
 p
