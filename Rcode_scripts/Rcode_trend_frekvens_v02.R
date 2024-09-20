@@ -168,7 +168,7 @@ p <- ggplot(dff) +
             show.legend = F,
             hjust=0, size=3) +
   facet_wrap(.~Latspecies, ncol=4,
-             labeller = label_bquote(col = italicA(.(Latspecies))) ) +
+             labeller = label_bquote(col = italic(.(Latspecies))) ) +
   scale_colour_manual(values=pal_season, name="Sæson") +
   scale_alpha_manual(values=c(0.8, 0.6), guide="none") +
   scale_linetype_manual(values=c("solid", "longdash"), guide="none") +
