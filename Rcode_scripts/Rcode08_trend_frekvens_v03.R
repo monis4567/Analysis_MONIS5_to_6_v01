@@ -1,3 +1,9 @@
+#!/usr/bin/env Rscript
+# -*- coding: utf-8 -*-
+
+#____________________________________________________________________________#
+# R-code provided for the project:
+# “MONIS6”
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -10,7 +16,7 @@ file <-"output06_presence_absence_evaluation_for_MST2017_2022_samples/table10_v0
 file <-"output06_presence_absence_evaluation_for_MST2017_2022_samples/table_12_v01_results_for_plotting_on_map.csv"
 # read in the csv-file
 df_obs <- read.table(file, sep=",", header=T)
-
+#colnames(df_obs)
 # exclude if there is no Latin species name 
 df_obs <- df_obs  %>%
   dplyr::rename(Latspecies=Lat_Species)   %>%
@@ -18,8 +24,6 @@ df_obs <- df_obs  %>%
   dplyr::filter(!(Latspecies==0)) %>%
   dplyr::filter(!(lokalitet_vanda==0)) %>%
   dplyr::rename(stn=lokalitet_vanda)
-
-
 # get the sampling year and sampling month, and make the values numeric
 df_obs <- df_obs %>%
   dplyr::mutate(year=as.numeric(substr(Dato_inds,1,4)),
@@ -48,19 +52,19 @@ df_finds <- df_obs %>%
   dplyr::summarise(n_fnd=n(), .groups="drop") 
 #
 df <- dplyr::distinct(df_obs, Latspecies) %>%
-  merge(distinct(df_obs, stn), all=T)  %>%
-  merge(distinct(df_obs, year), all=T)  %>%
-  merge(distinct(df_obs, season), all=T) 
+  merge(dplyr::distinct(df_obs, stn), all=T)  %>%
+  merge(dplyr::distinct(df_obs, year), all=T)  %>%
+  merge(dplyr::distinct(df_obs, season), all=T) 
 # use the data frame with counts of attempts to search for the organism
 # and join it with the data frame with the counts of the detections of the 
-# organism, use 'mutate' to replace any eventual NAs with '0'
+# organism, use 'dplyr::mutate' to replace any eventual NAs with '0'
 df_srchfnd <- df_srchfor %>% 
-  dplyr::left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
+  left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
   dplyr::mutate(n_fnd=ifelse(is.na(n_fnd),0,n_fnd))
 #
 dff <- df_srchfnd %>%
   dplyr::group_by(Latspecies, year,season) %>%
-  #summarise(n=n(), f=sum(detected)/n(), .groups="drop") %>%
+  #dplyr::summarise(n=n(), f=sum(detected)/n(), .groups="drop") %>%
   dplyr::mutate(Latspecies_season=paste0(Latspecies,"_",season))
 # make a frequency element 'f', that is based on the number of detections
 # per Latspecies per year per season, where the 'f' is the number of detections
@@ -85,7 +89,7 @@ pvalues <- lm_list %>%
 slopes <- lm_list %>% 
   purrr::map(summary.lm) %>% 
   purrr::map(c("coefficients")) %>% 
-  purrr::map_dbl(2)  %>% # 8th element is the p-value 
+  map_dbl(2)  %>% # 8th element is the p-value 
   broom::tidy() %>% 
   dplyr::arrange(desc(x)) %>% 
   dplyr::rename(Latspecies_season=names, slope = x)
@@ -96,10 +100,10 @@ get_fitted_vals <- function(lm){
 }
 
 df_fit <- lm_list %>% purrr::map(get_fitted_vals) %>%
-  dplyr::bind_rows(.id="Latspecies_season")
+  bind_rows(.id="Latspecies_season")
 
 df_fit <- df_fit %>%
-  tidyr::pivot_longer(cols=2:ncol(df_fit), names_to="year", values_to="pred")
+  pivot_longer(cols=2:ncol(df_fit), names_to="year", values_to="pred")
 
 df_fit <- df_fit %>%
   dplyr::mutate(year=as.numeric(year))
@@ -122,7 +126,7 @@ df_fit <- df_fit %>%
   left_join(df_fit_year, by=c("Latspecies_season","year_id"))
 
 df_fit <- df_fit %>%
-  dplyr::left_join(pvalues, by="Latspecies_season") 
+  left_join(pvalues, by="Latspecies_season") 
 
 df_fit <- df_fit %>%
   dplyr::mutate(pred=ifelse(is.na(p_val),NA,pred)) %>%
@@ -154,7 +158,7 @@ df_note <-  df_fit %>%
 
 #View(df_note)
 
-#dff <- dff %>% mutate(year=ifelse(season=="jan-jun",year,year+0.5))
+#dff <- dff %>% dplyr::mutate(year=ifelse(season=="jan-jun",year,year+0.5))
 mn.yer <- round(min(dff$year),0)
 mx.yer <- ceiling(max(dff$year))
 
