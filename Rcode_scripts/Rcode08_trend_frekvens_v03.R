@@ -95,35 +95,26 @@ slopes <- lm_list %>%
   dplyr::rename(Latspecies_season=names, slope = x)
 
 
-get_fitted_vals <- function(lm){
-  return(lm$fitted.values)
+get_fitted_vals <- function(lm, conf_int=0.9){
+  df <- lm %>% predict.lm(
+    interval="confidence", 
+    level=conf_int) %>%
+    as.data.frame() %>%
+    rename(pred=fit)
+  yr <- lm$model %>%
+    select(year)
+  df <- yr %>%
+    bind_cols(df) %>%
+    ungroup()
+  return(df)
 }
 
 df_fit <- lm_list %>% purrr::map(get_fitted_vals) %>%
   bind_rows(.id="Latspecies_season")
 
 df_fit <- df_fit %>%
-  pivot_longer(cols=2:ncol(df_fit), names_to="year", values_to="pred")
-
-df_fit <- df_fit %>%
-  dplyr::mutate(year=as.numeric(year))
-
-df_fit <- df_fit %>%
   dplyr::mutate(Latspecies = stringr::str_split_i(Latspecies_season,"_",1),
          season = stringr::str_split_i(Latspecies_season,"_",2))
-
-df_fit_year <- dff %>%
-  dplyr::ungroup() %>%
-  dplyr::distinct(Latspecies_season, year) %>%
-  dplyr::group_by(Latspecies_season) %>%
-  dplyr::arrange(year) %>%
-  dplyr::mutate(year_id=row_number()) %>%
-  dplyr::ungroup()
-
-
-df_fit <- df_fit %>% 
-  dplyr::rename(year_id=year) %>%
-  left_join(df_fit_year, by=c("Latspecies_season","year_id"))
 
 df_fit <- df_fit %>%
   left_join(pvalues, by="Latspecies_season") 
@@ -165,6 +156,10 @@ mx.yer <- ceiling(max(dff$year))
 pal_season <- c("#0000FF", "#FF0000")
 
 p <- ggplot(dff) +
+  geom_ribbon(data=df_fit,
+              aes(x=year, ymin=lwr, ymax=upr, 
+                  group=season, fill=season),
+              colour=NA, alpha=0.1) +
   geom_line(data=df_fit,
             aes(x=year, y=pred, group=season, colour=season, 
                 linetype = style, alpha=style)) +
@@ -178,6 +173,7 @@ p <- ggplot(dff) +
   scale_colour_manual(values=pal_season, name="Sæson") +
   scale_alpha_manual(values=c(0.8, 0.6), guide="none") +
   scale_linetype_manual(values=c("solid", "longdash"), guide="none") +
+  scale_fill_manual(values=pal_season, name="Sæson", guide="none") +
   # make the x axis have breaks that are represented every 1 increment      
   scale_x_continuous(breaks=seq(mn.yer, mx.yer, 1)) +
   xlab("år") +
