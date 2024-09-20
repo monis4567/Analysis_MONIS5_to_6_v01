@@ -13,20 +13,16 @@ df_obs <- read.table(file, sep=",", header=T)
 
 # exclude if there is no Latin species name 
 df_obs <- df_obs  %>%
-  rename(Latspecies=Lat_Species)   %>%
+  dplyr::rename(Latspecies=Lat_Species)   %>%
   dplyr::filter(!is.na(Latspecies)) %>%
   dplyr::filter(!(Latspecies==0)) %>%
   dplyr::filter(!(lokalitet_vanda==0)) %>%
-  rename(stn=lokalitet_vanda)
+  dplyr::rename(stn=lokalitet_vanda)
 
-# get the observations for "Neogobius melanostomus" in 2018
-
-df_obsNeomel2018 <- df_obs %>% filter(Latspecies=="Neogobius melanostomus") %>%
-          filter(yea==2018)
 
 # get the sampling year and sampling month, and make the values numeric
 df_obs <- df_obs %>%
-  mutate(year=as.numeric(substr(Dato_inds,1,4)),
+  dplyr::mutate(year=as.numeric(substr(Dato_inds,1,4)),
          month=as.numeric(substr(Dato_inds,6,7)))
 # split the string by delimiter
 ssnmnth  <- strsplit(as.character(df_obs$yer_ssn2), ", ")
@@ -34,24 +30,24 @@ ssnmnth  <- strsplit(as.character(df_obs$yer_ssn2), ", ")
 df_obs$ssnmnth <- sapply(ssnmnth, "[[", 2)
 # make it a factor
 df_obs <- df_obs %>%
-  mutate(season=as.factor(ssnmnth))
+  dplyr::mutate(season=as.factor(ssnmnth))
 
 # substitute to remove the space in the seasons 
 df_obs$season <- gsub(" ","",df_obs$season)
 
 # count up the number of attempts to search for the Latspecies, per year, per season
 df_srchfor <- df_obs %>%
-  group_by(Latspecies, year, season) %>%
-  summarise(n_srchfor=n(), .groups="drop")
+  dplyr::group_by(Latspecies, year, season) %>%
+  dplyr::summarise(n_srchfor=n(), .groups="drop")
 # count up the number of actual detections for the Latspecies, per year, per season
 # but exlude those rows where organism was not found - i.e. when it
 # was 'orgFnd2==0'
 df_finds <- df_obs %>%
   dplyr::filter(!(orgFnd2==0)) %>%
-  group_by(Latspecies, year, season) %>%
-  summarise(n_fnd=n(), .groups="drop") 
+  dplyr::group_by(Latspecies, year, season) %>%
+  dplyr::summarise(n_fnd=n(), .groups="drop") 
 #
-df <- distinct(df_obs, Latspecies) %>%
+df <- dplyr::distinct(df_obs, Latspecies) %>%
   merge(distinct(df_obs, stn), all=T)  %>%
   merge(distinct(df_obs, year), all=T)  %>%
   merge(distinct(df_obs, season), all=T) 
@@ -59,13 +55,13 @@ df <- distinct(df_obs, Latspecies) %>%
 # and join it with the data frame with the counts of the detections of the 
 # organism, use 'mutate' to replace any eventual NAs with '0'
 df_srchfnd <- df_srchfor %>% 
-  left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
-  mutate(n_fnd=ifelse(is.na(n_fnd),0,n_fnd))
+  dplyr::left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
+  dplyr::mutate(n_fnd=ifelse(is.na(n_fnd),0,n_fnd))
 #
 dff <- df_srchfnd %>%
-  group_by(Latspecies, year,season) %>%
+  dplyr::group_by(Latspecies, year,season) %>%
   #summarise(n=n(), f=sum(detected)/n(), .groups="drop") %>%
-  mutate(Latspecies_season=paste0(Latspecies,"_",season))
+  dplyr::mutate(Latspecies_season=paste0(Latspecies,"_",season))
 # make a frequency element 'f', that is based on the number of detections
 # per Latspecies per year per season, where the 'f' is the number of detections
 # per attempts made to find the organism
@@ -74,25 +70,25 @@ dff$f <- dff$n_fnd/dff$n_srchfor
 dff_split <- dff %>%
   split(.$Latspecies_season)
 # since the jul-nov season is half a season later, the year can be added 0.5 
-dff <- dff %>% mutate(year=ifelse(season=="jan-jun",year,year+0.5))
+dff <- dff %>% dplyr::mutate(year=ifelse(season=="jan-jun",year,year+0.5))
 
 lm_list <- purrr::map(dff_split, lm, formula= f ~ year)
 
 pvalues <- lm_list %>% 
-  map(summary.lm) %>% 
-  map(c("coefficients")) %>% 
-  map_dbl(8)  %>% # 8th element is the p-value 
+  purrr::map(summary.lm) %>% 
+  purrr::map(c("coefficients")) %>% 
+  purrr::map_dbl(8)  %>% # 8th element is the p-value 
   broom::tidy() %>% 
   dplyr::arrange(desc(x)) %>% 
-  rename(Latspecies_season=names, p_val = x)
+  dplyr::rename(Latspecies_season=names, p_val = x)
 
 slopes <- lm_list %>% 
-  map(summary.lm) %>% 
-  map(c("coefficients")) %>% 
-  map_dbl(2)  %>% # 8th element is the p-value 
+  purrr::map(summary.lm) %>% 
+  purrr::map(c("coefficients")) %>% 
+  purrr::map_dbl(2)  %>% # 8th element is the p-value 
   broom::tidy() %>% 
   dplyr::arrange(desc(x)) %>% 
-  rename(Latspecies_season=names, slope = x)
+  dplyr::rename(Latspecies_season=names, slope = x)
 
 
 get_fitted_vals <- function(lm){
@@ -100,61 +96,61 @@ get_fitted_vals <- function(lm){
 }
 
 df_fit <- lm_list %>% purrr::map(get_fitted_vals) %>%
-  bind_rows(.id="Latspecies_season")
+  dplyr::bind_rows(.id="Latspecies_season")
 
 df_fit <- df_fit %>%
-  pivot_longer(cols=2:ncol(df_fit), names_to="year", values_to="pred")
+  tidyr::pivot_longer(cols=2:ncol(df_fit), names_to="year", values_to="pred")
 
 df_fit <- df_fit %>%
-  mutate(year=as.numeric(year))
+  dplyr::mutate(year=as.numeric(year))
 
 df_fit <- df_fit %>%
-  mutate(Latspecies = stringr::str_split_i(Latspecies_season,"_",1),
+  dplyr::mutate(Latspecies = stringr::str_split_i(Latspecies_season,"_",1),
          season = stringr::str_split_i(Latspecies_season,"_",2))
 
 df_fit_year <- dff %>%
-  ungroup() %>%
-  distinct(Latspecies_season, year) %>%
-  group_by(Latspecies_season) %>%
-  arrange(year) %>%
-  mutate(year_id=row_number()) %>%
-  ungroup()
+  dplyr::ungroup() %>%
+  dplyr::distinct(Latspecies_season, year) %>%
+  dplyr::group_by(Latspecies_season) %>%
+  dplyr::arrange(year) %>%
+  dplyr::mutate(year_id=row_number()) %>%
+  dplyr::ungroup()
 
 
 df_fit <- df_fit %>% 
-  rename(year_id=year) %>%
+  dplyr::rename(year_id=year) %>%
   left_join(df_fit_year, by=c("Latspecies_season","year_id"))
 
 df_fit <- df_fit %>%
-  left_join(pvalues, by="Latspecies_season") 
+  dplyr::left_join(pvalues, by="Latspecies_season") 
 
 df_fit <- df_fit %>%
-  mutate(pred=ifelse(is.na(p_val),NA,pred)) %>%
-  mutate(style=ifelse(p_val<=0.1, "1", "2"))
+  dplyr::mutate(pred=ifelse(is.na(p_val),NA,pred)) %>%
+  dplyr::mutate(style=ifelse(p_val<=0.1, "1", "2"))
 
 df_fit <- df_fit %>%
   left_join(slopes, by="Latspecies_season") %>% 
-  mutate(year=ifelse(season=="jan-jun",year,year+0.5))
+  dplyr::mutate(year=ifelse(season=="jan-jun",year,year+0.5))
 
 
 p_sig <- 0.1
 
 df_note <-  df_fit %>%
-  mutate(slope=ifelse(is.na(p_val),NA, slope)) %>%
-  distinct(Latspecies, season, slope, p_val) %>%
-  mutate(p_text=ifelse(is.na(slope),NA_character_, ifelse(p_val<0.001,
+  dplyr::mutate(slope=ifelse(is.na(p_val),NA, slope)) %>%
+  dplyr::distinct(Latspecies, season, slope, p_val) %>%
+  dplyr::mutate(p_text=ifelse(is.na(slope),NA_character_, ifelse(p_val<0.001,
                                                           "p<0.001",
                                                           ifelse(p_val> p_sig, "n.s.",
                                                                  paste0("p=",round(p_val,3)))))) %>%
-  mutate(note=ifelse(is.na(slope),NA_character_,
+  dplyr::mutate(note=ifelse(is.na(slope),NA_character_,
                      paste0(ifelse(slope>0,"+",""),
                             round(100*slope,1),"%/år (", p_text, ")"))) %>%
-  group_by(Latspecies) %>%
-  mutate(n=sum(!is.na(slope))) %>%
-  ungroup() %>%
-  mutate(offset=ifelse(n>1,0.2,0)) %>%
-  mutate(y=max(dff$f,na.rm=T), year=min(dff$year,na.rm=T)) %>%
-  mutate(y=ifelse(season=="jan-jun",y,y-offset))
+  dplyr::group_by(Latspecies) %>%
+  dplyr::mutate(n=sum(!is.na(slope))) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(offset=ifelse(n>1,0.2,0)) %>%
+  dplyr::mutate(y=max(dff$f,na.rm=T), year=min(dff$year,na.rm=T)) %>%
+  dplyr::mutate(y=ifelse(season=="jan-jun",y,y-offset))
 
 #View(df_note)
 
