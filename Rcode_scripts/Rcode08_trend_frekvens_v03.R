@@ -173,6 +173,7 @@ p <- ggplot(dff) +
   scale_colour_manual(values=pal_season, name="Sæson") +
   scale_alpha_manual(values=c(0.8, 0.6), guide="none") +
   scale_linetype_manual(values=c("solid", "longdash"), guide="none") +
+  scale_fill_manual(values=pal_season, name="Sæson", guide="none") +
   # make the x axis have breaks that are represented every 1 increment      
   scale_x_continuous(breaks=seq(mn.yer, mx.yer, 1)) +
   xlab("år") +
