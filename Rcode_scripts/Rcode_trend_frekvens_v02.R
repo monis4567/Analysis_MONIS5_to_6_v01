@@ -10,7 +10,7 @@ file <-"output06_presence_absence_evaluation_for_MST2017_2022_samples/table10_v0
 file <-"output06_presence_absence_evaluation_for_MST2017_2022_samples/table_12_v01_results_for_plotting_on_map.csv"
 # read in the csv-file
 df_obs <- read.table(file, sep=",", header=T)
-#colnames(df_obs)
+
 # exclude if there is no Latin species name 
 df_obs <- df_obs  %>%
   rename(Latspecies=Lat_Species)   %>%
@@ -18,6 +18,12 @@ df_obs <- df_obs  %>%
   dplyr::filter(!(Latspecies==0)) %>%
   dplyr::filter(!(lokalitet_vanda==0)) %>%
   rename(stn=lokalitet_vanda)
+
+# get the observations for "Neogobius melanostomus" in 2018
+
+df_obsNeomel2018 <- df_obs %>% filter(Latspecies=="Neogobius melanostomus") %>%
+          filter(yea==2018)
+
 # get the sampling year and sampling month, and make the values numeric
 df_obs <- df_obs %>%
   mutate(year=as.numeric(substr(Dato_inds,1,4)),
