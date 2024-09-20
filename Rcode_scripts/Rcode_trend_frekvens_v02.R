@@ -27,12 +27,12 @@ ssnmnth  <- strsplit(as.character(df_obs$yer_ssn2), ", ")
 # and use the splitted string to get each element and add back in a column
 df_obs$ssnmnth <- sapply(ssnmnth, "[[", 2)
 # make it a factor
- df_obs <- df_obs %>%
-   mutate(season=as.factor(ssnmnth))
- 
- # substitute to remove the space in the seasons 
- df_obs$season <- gsub(" ","",df_obs$season)
- 
+df_obs <- df_obs %>%
+  mutate(season=as.factor(ssnmnth))
+
+# substitute to remove the space in the seasons 
+df_obs$season <- gsub(" ","",df_obs$season)
+
 # count up the number of attempts to search for the Latspecies, per year, per season
 df_srchfor <- df_obs %>%
   group_by(Latspecies, year, season) %>%
@@ -106,8 +106,18 @@ df_fit <- df_fit %>%
   mutate(Latspecies = stringr::str_split_i(Latspecies_season,"_",1),
          season = stringr::str_split_i(Latspecies_season,"_",2))
 
+df_fit_year <- dff %>%
+  ungroup() %>%
+  distinct(Latspecies_season, year) %>%
+  group_by(Latspecies_season) %>%
+  arrange(year) %>%
+  mutate(year_id=row_number()) %>%
+  ungroup()
 
-df_fit$year <- sort(unique(df$year))[df_fit$year]
+
+df_fit <- df_fit %>% 
+  rename(year_id=year) %>%
+  left_join(df_fit_year, by=c("Latspecies_season","year_id"))
 
 df_fit <- df_fit %>%
   left_join(pvalues, by="Latspecies_season") 
@@ -117,7 +127,8 @@ df_fit <- df_fit %>%
   mutate(style=ifelse(p_val<=0.1, "1", "2"))
 
 df_fit <- df_fit %>%
-  left_join(slopes, by="Latspecies_season") 
+  left_join(slopes, by="Latspecies_season") %>% 
+  mutate(year=ifelse(season=="jan-jun",year,year+0.5))
 
 
 p_sig <- 0.1
@@ -126,12 +137,12 @@ df_note <-  df_fit %>%
   mutate(slope=ifelse(is.na(p_val),NA, slope)) %>%
   distinct(Latspecies, season, slope, p_val) %>%
   mutate(p_text=ifelse(is.na(slope),NA_character_, ifelse(p_val<0.001,
-               "p<0.001",
-               ifelse(p_val> p_sig, "n.s.",
-               paste0("p=",round(p_val,3)))))) %>%
+                                                          "p<0.001",
+                                                          ifelse(p_val> p_sig, "n.s.",
+                                                                 paste0("p=",round(p_val,3)))))) %>%
   mutate(note=ifelse(is.na(slope),NA_character_,
-               paste0(ifelse(slope>0,"+",""),
-                      round(100*slope,1),"%/år (", p_text, ")"))) %>%
+                     paste0(ifelse(slope>0,"+",""),
+                            round(100*slope,1),"%/år (", p_text, ")"))) %>%
   group_by(Latspecies) %>%
   mutate(n=sum(!is.na(slope))) %>%
   ungroup() %>%
@@ -150,10 +161,10 @@ pal_season <- c("#0000FF", "#FF0000")
 p <- ggplot(dff) +
   geom_line(data=df_fit,
             aes(x=year, y=pred, group=season, colour=season, 
-                             linetype = style, alpha=style)) +
+                linetype = style, alpha=style)) +
   geom_point(aes(x=year, y=f, group=season, colour=season)) +
   geom_text(data=df_note, aes(x=year, y=y, group=season, 
-            colour=season, label=note),
+                              colour=season, label=note),
             show.legend = F,
             hjust=0, size=3) +
   facet_wrap(.~Latspecies, ncol=4,
