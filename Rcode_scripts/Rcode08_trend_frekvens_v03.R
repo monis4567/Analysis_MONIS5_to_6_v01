@@ -130,6 +130,9 @@ df_fit <- df_fit %>%
 
 p_sig <- 0.1
 
+mxfnds <- max(dff$f)
+mxfnds
+
 df_note <-  df_fit %>%
   dplyr::mutate(slope=ifelse(is.na(p_val),NA, slope)) %>%
   dplyr::distinct(Latspecies, season, slope, p_val) %>%
@@ -143,7 +146,7 @@ df_note <-  df_fit %>%
   dplyr::group_by(Latspecies) %>%
   dplyr::mutate(n=sum(!is.na(slope))) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(offset=ifelse(n>1,0.2,0)) %>%
+  dplyr::mutate(offset=ifelse(n>1,-0.5,0)) %>%
   dplyr::mutate(y=max(dff$f,na.rm=T), year=min(dff$year,na.rm=T)) %>%
   dplyr::mutate(y=ifelse(season=="jan-jun",y,y-offset))
 
