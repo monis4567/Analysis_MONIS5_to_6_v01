@@ -61,6 +61,20 @@ df <- dplyr::distinct(df_obs, Latspecies) %>%
 df_srchfnd <- df_srchfor %>% 
   left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
   dplyr::mutate(n_fnd=ifelse(is.na(n_fnd),0,n_fnd))
+
+# if there are less than 3 observations of the species then, it is not possible
+# to do a linear model , so start by counting the number of observations per #
+# species per season
+df_cntprseas <- dff %>% 
+  dplyr::group_by(Latspecies_season) %>% 
+  dplyr::summarise(n_perseason = n())
+# join the main data frame with the data frame that counts up
+# detections of species per season, and use filter to exclude
+# when there is less than 3 observations
+dff <- dff %>% 
+  left_join(df_cntprseas, by=c("Latspecies_season")) %>%
+  dplyr::filter((n_perseason>=3)) 
+
 #
 dff <- df_srchfnd %>%
   dplyr::group_by(Latspecies, year,season) %>%
@@ -100,12 +114,12 @@ get_fitted_vals <- function(lm, conf_int=0.9){
     interval="confidence", 
     level=conf_int) %>%
     as.data.frame() %>%
-    rename(pred=fit)
+    dplyr::rename(pred=fit)
   yr <- lm$model %>%
-    select(year)
+    dplyr::select(year)
   df <- yr %>%
     bind_cols(df) %>%
-    ungroup()
+    dplyr::ungroup()
   return(df)
 }
 
@@ -187,7 +201,7 @@ p <- ggplot(dff) +
         strip.text = element_text(hjust = 0))
 # define output directory
 wd08 <- "output08_stckbarplot_w_GBIF_and_iNat_for_MST2017_2023_records"
-outflNm <- "Fig18_trend_frekvens.png"
+outflNm <- "Fig18_trend_frekvens_MONIS_smpls.png"
 wd00wd08_outflNm <- paste(wd00,wd08,outflNm, sep="/")
 ggsave(p, 
        file=wd00wd08_outflNm, 

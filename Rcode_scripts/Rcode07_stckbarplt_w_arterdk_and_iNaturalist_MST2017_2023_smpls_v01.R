@@ -1118,35 +1118,41 @@ p <- ggpubr::ggline(df_A08, x = "yer_ssn.per", y = "tot_sum.orgFnd",
 p
 # re order the data frame by the columns
 df_A08 <- df_A08 %>% plyr::arrange(yer,yer_ssn.per)
+
+# substitute space with nothing
+df_A08$ssn.per  <- gsub(" ","",df_A08$ssn.per)
+# substitute "iNat" with "iNaturalist"
+df_A08$source  <- gsub("iNat","iNaturalist",df_A08$source)
 # see this website on how to use 'ggpubr' 
 # https://rpkgs.datanovia.com/ggpubr/index.html
 # Box plots with jittered points
 # :::::::::::::::::::::::::::::::::::::::::::::::::::
 # Change outline colors by groups: dose
 # Use custom color palette
-# Add jitter points and change the shape by groups
-p <- ggpubr::ggboxplot(df_A08, x = "yer_ssn.per", y = "tot_sum.orgFnd", 
+p <- ggpubr::ggboxplot(df_A08, x = "yer", y = "tot_sum.orgFnd", 
                color = "source", 
                palette =c(cbbPalette),
                add = "jitter", shape = "source")
-
 # Facet a ggpubr-ggplot into Multiple Panels
-p <- facet(p + theme_bw(), facet.by = "source", 
-           ncol = 1,
+p <- facet(p + theme_bw(), 
+           facet.by = c("source","ssn.per"), 
+           ncol = 2,
            strip.text = element_text(colour = 'black', face="bold", hjust=0.1),
            #short.panel.labs = FALSE,   # Allow long labels in panels
            panel.labs.background = list(fill = "white",
                                         color = "white") )
-p
 # notice that further modification of a 'ggpubr' must happen
 # outside the code that calls the initial plot, see:
 # https://stackoverflow.com/questions/76381758/why-do-i-keep-getting-an-error-about-operations-possible-only-for-numeric-logi
-p <- p + rotate_x_text(angle = 90)
+# turn the axis labels
+p <- p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+p <- p + xlab("år")
+p <- p + ylab("antal fund")
 p
 # Add p-values comparing groups
 # Specify the comparisons you want
 # make a vector with all years and seasons
-al.yssn <- unique(df_A08$yer_ssn.per)
+al.yssn <- unique(df_A08$yer)
 # get the last elements of the vector and the first elements
 lstyer <- tail(al.yssn, n=5L)
 fstyer <- head(al.yssn, n=5L)
@@ -1200,7 +1206,7 @@ df_A09 <- df_A09[grepl(LtSpc.zero,df_A09$Lat_Species),]
 #
 upp.y.lvl <- max(df_A09$tot_sum.orgFnd)+1
 # Add jitter points and change the shape by groups
-p <- ggpubr::ggboxplot(df_A09, x = "yer_ssn.per", y = "tot_sum.orgFnd", 
+p <- ggpubr::ggboxplot(df_A09, x = "yer", y = "tot_sum.orgFnd", 
                        color = "Lat_Species", 
                        ylim = c(0, upp.y.lvl),
                        palette =c(cbbPalette),
@@ -1215,12 +1221,13 @@ p <- facet(p + theme_bw(), facet.by = c("Lat_Species","ssn.per"),
                                         color = "white") )
 # https://stackoverflow.com/questions/76381758/why-do-i-keep-getting-an-error-about-operations-possible-only-for-numeric-logi
 p <- p + rotate_x_text(angle = 90)
-
+p <- p + xlab("år")
+p <- p + ylab("antal fund")
 # use the vector for making the comparisons
 p <- p + stat_compare_means(comparisons = my_cmp)+ # Add pairwise comparisons p-value
   stat_compare_means(label.y = 50)                   # Add global p-value
 # 
-#p
+p
 #
 bSaveFigures<-T
 if(bSaveFigures==T){
