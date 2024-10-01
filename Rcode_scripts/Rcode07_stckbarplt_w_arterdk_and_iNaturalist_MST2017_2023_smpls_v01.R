@@ -450,7 +450,7 @@ p05 <- ggplot(df_A08, aes(#fill=Lat_Species,
   theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1)) +
   scale_x_discrete(label = yere) +
   # alter the labels along the x- and y- axis
-  labs(y = "positive miljø-DNA detektioner", x = "årstal og sæson") + 
+  labs(y = "antal fund", x = "årstal og sæson") + 
   guides(fill=guide_legend(title="Latinsk artsnavn",
                            ncol=1)) +
   

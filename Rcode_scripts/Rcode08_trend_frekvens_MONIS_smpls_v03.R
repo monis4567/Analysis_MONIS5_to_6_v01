@@ -62,6 +62,12 @@ df_srchfnd <- df_srchfor %>%
   left_join(df_finds, by=c("Latspecies", "year", "season")) %>%  
   dplyr::mutate(n_fnd=ifelse(is.na(n_fnd),0,n_fnd))
 
+#
+dff <- df_srchfnd %>%
+  dplyr::group_by(Latspecies, year,season) %>%
+  #dplyr::summarise(n=n(), f=sum(detected)/n(), .groups="drop") %>%
+  dplyr::mutate(Latspecies_season=paste0(Latspecies,"_",season))
+
 # if there are less than 3 observations of the species then, it is not possible
 # to do a linear model , so start by counting the number of observations per #
 # species per season
@@ -75,11 +81,6 @@ dff <- dff %>%
   left_join(df_cntprseas, by=c("Latspecies_season")) %>%
   dplyr::filter((n_perseason>=3)) 
 
-#
-dff <- df_srchfnd %>%
-  dplyr::group_by(Latspecies, year,season) %>%
-  #dplyr::summarise(n=n(), f=sum(detected)/n(), .groups="drop") %>%
-  dplyr::mutate(Latspecies_season=paste0(Latspecies,"_",season))
 # make a frequency element 'f', that is based on the number of detections
 # per Latspecies per year per season, where the 'f' is the number of detections
 # per attempts made to find the organism

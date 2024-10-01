@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+# -*- coding: utf-8 -*-
 
 # To be able to install 'flextable', it is required to have  'gdtools'
 # and 'gdtools needs 'systemfonts' to be installed. Install the packages
