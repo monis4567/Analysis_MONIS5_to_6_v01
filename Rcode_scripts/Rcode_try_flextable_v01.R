@@ -71,51 +71,99 @@ rdt <- rdt %>% dplyr::arrange(Phylum,
 # exclude row if phylum is NA
 rdt <- rdt[!(is.na(rdt$Phylum)),]
 
-clNmtorep <- "Klasse"
-#clNmtorep <- "Phylum"
-indxf.txcl <- which(clNmtorep==colnames(rdt))
-nclrdt <- ncol(rdt)
-txg.in.rdt <- as.vector(unique(as.data.frame(rdt)[,indxf.txcl]))
-n.txg <- length(txg.in.rdt)
-sq.txg <- seq(1,n.txg,1)
-rwtadd.txg <- list()
-for (i in sq.txg)
-{
-  Nm <- txg.in.rdt[i]
-  print(Nm)
-  rtadd <- rep(Nm,nclrdt)
-  idxf <- indxf.txcl
-  ctbblnk <- seq(1,idxf,1)
-  df_txrep <- as.data.frame(t(rtadd))
-  # if (length(ctbblnk)>1){
-  # df_txrep[,c(ctbblnk)] <- ""
-  #   }
-  rwtadd.txg[[i]] <- df_txrep
-}
+
+clNMs <- colnames(rdt)
+#_______
+#https://stackoverflow.com/questions/8753531/repeat-rows-of-a-data-frame-n-times#8753732
+
+clNMstr <- c("Phylum", "Klasse", "Orden", "Familie")
+
+ttcls <- ncol(rdt)
+rdt.tx <- rdt[clNMstr]
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden,Familie)
+idxN <- ncol(rdt.tx)
+Fcls <- rdt.tx[,idxN]
+ncF <-(ttcls-idxN)
+Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+rdt.txfF <- rdt.tx[,1:(idxN)]
+Frws <- cbind(rdt.txfF,Fcln)
+ncol(Frws)
+colnames(Frws) <- colnames(rdt)
+family.rows <- Frws
+
+ttcls <- ncol(rdt)
+rdt.tx <- rdt[clNMstr]
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden)
+idxN <- ncol(rdt.tx)
+Fcls <- rdt.tx[,idxN]
+ncF <-(ttcls-idxN)
+Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+rdt.txfF <- rdt.tx[,1:(idxN)]
+Frws <- cbind(rdt.txfF,Fcln)
+ncol(Frws)
+colnames(Frws) <- colnames(rdt)
+order.rows <- Frws
+
+ttcls <- ncol(rdt)
+rdt.tx <- rdt[clNMstr]
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse)
+idxN <- ncol(rdt.tx)
+Fcls <- rdt.tx[,idxN]
+ncF <-(ttcls-idxN)
+Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+rdt.txfF <- rdt.tx[,1:(idxN)]
+Frws <- cbind(rdt.txfF,Fcln)
+ncol(Frws)
+colnames(Frws) <- colnames(rdt)
+class.rows <- Frws
+
+ttcls <- ncol(rdt)
+rdt.tx <- rdt[clNMstr]
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum)
+idxN <- ncol(rdt.tx)
+Fcls <- rdt.tx[,idxN]
+ncF <-(ttcls-idxN)
+Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+rdt.txfF <- rdt.tx[,1:(idxN)]
+Frws <- cbind(rdt.txfF,Fcln)
+ncol(Frws)
+colnames(Frws) <- colnames(rdt)
+phyla.rows <- Frws
+
+
 
 # combine the list of data frames into a data frame
-df_r01 <- dplyr::bind_rows(rwtadd.txg)
-df_r01
-
-colnames(df_r01) <- colnames(rdt)
-df_r02 <- rbind(df_r01,rdt)
+df_r01 <- dplyr::bind_rows(phyla.rows,
+                           class.rows,
+                           order.rows,
+                           family.rows,
+                            rdt)
+df_r02 <- df_r01 %>% dplyr::arrange(Phylum, Klasse, Orden, Familie)
 
 ft_r02 <- flextable(df_r02)
 ft_r02 <- merge_h(x = ft_r02)
-ft_r02
+# ft_r02 <- merge_v(ft_r02, j = c("Phylum", "Klasse", "Orden", "Familie"),
+#                   combine = T)
+
+tf2 <- paste0(wd00,"/",wd10,"/Table11_flextable_try01.html")
+save_as_html(
+  `flextabletryout table` = ft_r02,
+  path = tf2,
+  title = "rhoooo"
+)
 
 # or use another package ....
 
 #install.packages("taxlist")
 library(taxlist)
-#
-
-## Show taxonomy of papyrus
-?indented_list(Easplist, "papyrus")
-
-## Include synonyms and taxon views
-indented_list(Easplist, "papyrus", level = TRUE, synonyms = TRUE,
-              secundum = "secundum")
-#
+# #
+# 
+# ## Show taxonomy of papyrus
+# ?indented_list(Easplist, "papyrus")
+# 
+# ## Include synonyms and taxon views
+# indented_list(Easplist, "papyrus", level = TRUE, synonyms = TRUE,
+#               secundum = "secundum")
+# #
 
 #
