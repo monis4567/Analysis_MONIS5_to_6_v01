@@ -15,10 +15,12 @@ library(flextable)
 library(dplyr)
 library(tibble)
 library(tidyverse)
+library(xlsx)
+
 # set working directory
 #wd00 <- "/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6/Results_from_ABI7500_for_MONIS6_species_specific_assays"
 wd00 <- getwd()
-setwd (wd00)
+setwd(wd00)
 #define directory with output flies
 wd10 <- "output10_species_priority_table"
 # define full path for input directory
@@ -83,8 +85,11 @@ rdt.tx <- rdt[clNMstr]
 rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden,Familie)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
+nFrw <- nrow(Fcls)
+clAAfill<- rep("AA",nFrw)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
@@ -96,34 +101,46 @@ rdt.tx <- rdt[clNMstr]
 rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
+nFrw <- nrow(Fcls)
+clAAfill<- rep("AA",nFrw)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
 colnames(Frws) <- colnames(rdt)
 order.rows <- Frws
 
+
+
 ttcls <- ncol(rdt)
 rdt.tx <- rdt[clNMstr]
 rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
+nFrw <- nrow(Fcls)
+clAAfill<- rep("AA",nFrw)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
 colnames(Frws) <- colnames(rdt)
 class.rows <- Frws
 
+
 ttcls <- ncol(rdt)
 rdt.tx <- rdt[clNMstr]
 rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
+nFrw <- nrow(Fcls)
+clAAfill<- rep("AA",nFrw)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, Fcls, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
@@ -139,19 +156,34 @@ df_r01 <- dplyr::bind_rows(phyla.rows,
                            family.rows,
                             rdt)
 df_r02 <- df_r01 %>% dplyr::arrange(Phylum, Klasse, Orden, Familie)
+#View(df_r02)
+# using an opposite version of the 'fill' function from 'tidyr'
+#https://github.com/tidyverse/tidyr/issues/250
+unfill_vec <- function(x) {
+  same <- x == dplyr::lag(x)
+  ifelse(!is.na(same) & same, "AA", x)
+}
+# use the unfill function by applying it to all columns
+# # https://stackoverflow.com/questions/7303322/apply-function-to-each-column-in-a-data-frame-observing-each-columns-existing-da
+# this returns each column as a list, so these needs to be binded back
+# together in to a data frame using 'dplyr::bind_rows'
+df_r03 <- dplyr::bind_rows(lapply(df_r02, unfill_vec)) 
 
-ft_r02 <- flextable(df_r02)
+ft_r02 <- flextable(df_r03)
 ft_r02 <- merge_h(x = ft_r02)
-# ft_r02 <- merge_v(ft_r02, j = c("Phylum", "Klasse", "Orden", "Familie"),
-#                   combine = T)
+ft_r02 <- merge_v(ft_r02, j = c("Phylum", "Klasse", "Orden", "Familie"),
+                  combine = T)
 
-tf2 <- paste0(wd00,"/",wd10,"/Table11_flextable_try01.html")
+tf2 <- paste0(wd00,"/",wd10,"/Table11_v01_NIS_priority_indented.html")
 save_as_html(
   `flextabletryout table` = ft_r02,
   path = tf2,
   title = "rhoooo"
 )
-
+# make a filename
+tf2 <- paste0(wd00,"/",wd10,"/Table11_v02_NIS_priority_indented.xlsx")
+# or write it out as an excel file, as it will be copied into a word document
+xlsx::write.xlsx(df_r03, tf2)
 # or use another package ....
 
 #install.packages("taxlist")
