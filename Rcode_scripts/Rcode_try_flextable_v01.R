@@ -82,13 +82,15 @@ clNMstr <- c("Phylum", "Klasse", "Orden", "Familie")
 
 ttcls <- ncol(rdt)
 rdt.tx <- rdt[clNMstr]
-rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden,Familie)
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse, Orden, Familie)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
 nFrw <- nrow(Fcls)
 clAAfill<- rep("AA",nFrw)
+Fcls2 <- unlist(as.vector(Fcls))
+Fcls2 <- paste0(clAAfill,"_",Fcls2)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, Fcls2, simplify = FALSE))
 Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
@@ -98,20 +100,21 @@ family.rows <- Frws
 
 ttcls <- ncol(rdt)
 rdt.tx <- rdt[clNMstr]
-rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse,Orden)
+rdt.tx <- rdt.tx %>% dplyr::distinct(Phylum,Klasse, Orden)
 idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
 nFrw <- nrow(Fcls)
 clAAfill<- rep("AA",nFrw)
+Fcls2 <- unlist(as.vector(Fcls))
+Fcls2 <- paste0(clAAfill,"_",Fcls2)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, Fcls2, simplify = FALSE))
 Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
 colnames(Frws) <- colnames(rdt)
 order.rows <- Frws
-
 
 
 ttcls <- ncol(rdt)
@@ -121,8 +124,10 @@ idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
 nFrw <- nrow(Fcls)
 clAAfill<- rep("AA",nFrw)
+Fcls2 <- unlist(as.vector(Fcls))
+Fcls2 <- paste0(clAAfill,"_",Fcls2)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, Fcls2, simplify = FALSE))
 Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
@@ -138,15 +143,16 @@ idxN <- ncol(rdt.tx)
 Fcls <- rdt.tx[,idxN]
 nFrw <- nrow(Fcls)
 clAAfill<- rep("AA",nFrw)
+Fcls2 <- unlist(as.vector(Fcls))
+Fcls2 <- paste0(clAAfill,"_",Fcls2)
 ncF <-(ttcls-idxN)
-Fcln <- do.call("cbind", replicate(ncF, clAAfill, simplify = FALSE))
+Fcln <- do.call("cbind", replicate(ncF, Fcls2, simplify = FALSE))
 Fcln <- as.data.frame(Fcln)
 rdt.txfF <- rdt.tx[,1:(idxN)]
 Frws <- cbind(rdt.txfF,Fcln)
 ncol(Frws)
 colnames(Frws) <- colnames(rdt)
 phyla.rows <- Frws
-
 
 
 # combine the list of data frames into a data frame
@@ -156,34 +162,71 @@ df_r01 <- dplyr::bind_rows(phyla.rows,
                            family.rows,
                             rdt)
 df_r02 <- df_r01 %>% dplyr::arrange(Phylum, Klasse, Orden, Familie)
-#View(df_r02)
+# replace across all columns:
+#  https://stackoverflow.com/questions/29271549/replace-all-occurrences-of-a-string-in-a-data-frame
+df_r04 <- df_r02 %>%
+  mutate( across(
+    .cols = everything(),
+    ~str_replace( ., "AA_", "" )
+  ) )
+#_______________________________________________________________________________
+# begin function 'unfill_vec'
+#_______________________________________________________________________________
 # using an opposite version of the 'fill' function from 'tidyr'
 #https://github.com/tidyverse/tidyr/issues/250
 unfill_vec <- function(x) {
   same <- x == dplyr::lag(x)
   ifelse(!is.na(same) & same, "AA", x)
 }
+#_______________________________________________________________________________
+# end function 'unfill_vec'
+#_______________________________________________________________________________
 # use the unfill function by applying it to all columns
 # # https://stackoverflow.com/questions/7303322/apply-function-to-each-column-in-a-data-frame-observing-each-columns-existing-da
 # this returns each column as a list, so these needs to be binded back
 # together in to a data frame using 'dplyr::bind_rows'
-df_r03 <- dplyr::bind_rows(lapply(df_r02, unfill_vec)) 
-
-ft_r02 <- flextable(df_r03)
+df_r05 <- dplyr::bind_rows(lapply(df_r04, unfill_vec)) 
+#df_r05 <- as.data.frame(t(df_r05))
+oldNms.f.clmns <- (colnames(df_r05))
+# define a set of column names that are shorter
+replc2.f.clmns <- c("Phyl", "Klas", "Orde", "Famil", "GeSpAu", 
+  "ODK", "nS", "mS", 
+  "mSs", "mSo", 
+  "mSg", "PN", "Ref")
+# replace column names so that column names are even shorter
+colnames(df_r05) <- replc2.f.clmns
+# paste together to get abbreviations explanations
+abbrxexpl  <- paste(replc2.f.clmns,": ",oldNms.f.clmns,sep="")
+abbrxexpl <- paste(abbrxexpl, collapse = ", ")
+# replace across all columns:
+#  https://stackoverflow.com/questions/29271549/replace-all-occurrences-of-a-string-in-a-data-frame
+df_r05 <- df_r05 %>%
+  mutate( across(
+    .cols = everything(),
+    ~str_replace( ., "AA", "" )
+  ) )
+# make it a flextable to be able to merge
+ft_r02 <- flextable(df_r05)
 ft_r02 <- merge_h(x = ft_r02)
-ft_r02 <- merge_v(ft_r02, j = c("Phylum", "Klasse", "Orden", "Familie"),
+ft_r02 <- merge_v(ft_r02, j = c("Phyl", "Klas", "Orde", "Famil"),
                   combine = T)
-
+# define headers and subheaders for the flextable
+subheader.title <- paste0("Abbreviations for columns: ",abbrxexpl) 
+# define a filename to store the flextable in
 tf2 <- paste0(wd00,"/",wd10,"/Table11_v01_NIS_priority_indented.html")
+# store the flextable as a html file
 save_as_html(
-  `flextabletryout table` = ft_r02,
+  subheader.title = ft_r02,
   path = tf2,
-  title = "rhoooo"
+  title = "Table_11"
 )
+# see the flextable
+ft_r02
+
 # make a filename
 tf2 <- paste0(wd00,"/",wd10,"/Table11_v02_NIS_priority_indented.xlsx")
 # or write it out as an excel file, as it will be copied into a word document
-xlsx::write.xlsx(df_r03, tf2)
+xlsx::write.xlsx(df_r05, tf2)
 # or use another package ....
 
 #install.packages("taxlist")
