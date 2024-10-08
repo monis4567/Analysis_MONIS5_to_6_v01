@@ -43,6 +43,7 @@ id1 <- "xls"
 # https://stackoverflow.com/questions/35880242/r-selecting-element-from-list
 ls.fl01.xls <- ls.fl01[grep(paste0(id1), ls.fl01)]
 ls.fl01.xls <- ls.fl01.xls[grep("Artsprio", ls.fl01.xls)]
+ls.fl01.xls <- ls.fl01.xls[grep("v05", ls.fl01.xls)]
 
 infl01 <- paste0(wd00_wddata,"/",ls.fl01.xls)
 # read in xls spreadsheet tab with raw flourescense data from ABI7500
@@ -75,6 +76,32 @@ rdt <- rdt[!(is.na(rdt$Phylum)),]
 
 
 clNMs <- colnames(rdt)
+# identify the rows where there is a reference
+df_rdf <- rdt[!(is.na(rdt$Reference)),]
+# split string to get genus and species
+Gnsp.splt <- strsplit(df_rdf$Genus_og_species_og_author, " ")
+# get the genus and species
+genus.Nm <- sapply(Gnsp.splt, "[[", 1)
+species.Nm <- sapply(Gnsp.splt, "[[", 2)
+# get the authors and year for the publication with the detection assay
+Ref.splt <- strsplit(df_rdf$Reference, ", ")
+# get the authors
+auth.ref <- sapply(Ref.splt, "[[", 1)
+year.ref <- sapply(Ref.splt, "[[", 2)
+# get the genus and species and authors
+gnsp.Nm <- paste(genus.Nm,species.Nm,sep=" ")
+# paste together genus species names and author and reference
+dtct.ass.spc <- paste0("Af ",auth.ref," (",year.ref,") mod '",genus.Nm," ", species.Nm,"'")
+# make the the refenreces for the detection assays one single string
+dtct.ass.spc <- paste(dtct.ass.spc, collapse = ". ")
+# make a text string  that can be used for the table legend
+txt.dtct.ass.spc <- paste0("Tidligere detektionssystemer er udviklet: ", dtct.ass.spc)
+# identify the column index number for the column named 'Reference'
+idxclnmb.ref<- which(grepl("Reference",colnames(rdt)))
+# exclude the the column named 'Reference'
+rdt <- rdt[,-idxclnmb.ref]
+
+View(rdt)
 #_______
 #https://stackoverflow.com/questions/8753531/repeat-rows-of-a-data-frame-n-times#8753732
 
@@ -185,16 +212,29 @@ unfill_vec <- function(x) {
 # # https://stackoverflow.com/questions/7303322/apply-function-to-each-column-in-a-data-frame-observing-each-columns-existing-da
 # this returns each column as a list, so these needs to be binded back
 # together in to a data frame using 'dplyr::bind_rows'
-df_r05 <- dplyr::bind_rows(lapply(df_r04, unfill_vec)) 
+# but this must only be performed on the taxonomical category columns
+# as the other columns with numbers will be filled with 'AA's 
+df_r04.2 <- df_r04 %>% select(Phylum, Klasse, Orden, Familie, Genus_og_species_og_author) %>% 
+  lapply(unfill_vec) %>% 
+  dplyr::bind_rows()
+# select that are not taxonomical categories, and which have not been modified
+df_r04.3 <- df_r04 %>% select(Obs_Dk,Nseq_NCBI_for_IkkHjmM_Art, Mngl_Nseq_NCBI_for_tbsl_art_IkkHjmM_Art, 
+                  Mngl_Nseq_NCBI_for_tbsl_art_i_fam_IkkHjmM_Art, Mngl_Nseq_NCBI_for_tbsl_art_i_ord_IkkHjmM_Art, 
+                  Mngl_Nseq_NCBI_for_tbsl_art_i_gen_IkkHjmM_Art, PrNr)
+# combine data frames again
+df_r05 <- cbind(df_r04.2, df_r04.3)
+
 #df_r05 <- as.data.frame(t(df_r05))
 oldNms.f.clmns <- (colnames(df_r05))
 # define a set of column names that are shorter
 replc2.f.clmns <- c("Phyl", "Klas", "Orde", "Famil", "GeSpAu", 
   "ODK", "nS", "mS", 
   "mSs", "mSo", 
-  "mSg", "PN", "Ref")
+  "mSg", "PN")
 # replace column names so that column names are even shorter
 colnames(df_r05) <- replc2.f.clmns
+
+
 # paste together to get abbreviations explanations
 abbrxexpl  <- paste(replc2.f.clmns,": ",oldNms.f.clmns,sep="")
 abbrxexpl <- paste(abbrxexpl, collapse = ", ")
@@ -205,20 +245,26 @@ df_r05 <- df_r05 %>%
     .cols = everything(),
     ~str_replace( ., "AA", "" )
   ) )
+
 # make it a flextable to be able to merge
 ft_r02 <- flextable(df_r05)
 ft_r02 <- merge_h(x = ft_r02)
 ft_r02 <- merge_v(ft_r02, j = c("Phyl", "Klas", "Orde", "Famil"),
                   combine = T)
 # define headers and subheaders for the flextable
-subheader.title <- paste0("Abbreviations for columns: ",abbrxexpl) 
+subheader.title <- paste0("Liste over ikke-hjemmehørende arter for danske farvande,",
+"som det ville være fornuftigt at prioritere i en overvågning af miljø-DNA. ",
+"Alle arter er listet indenfor ‘phylum’, ‘klasse’, ‘orden’, ‘familie’ og ‘genus’ og",
+"art, med author navn for hvem der har beskrevet arten og årstallet for beskrivelsen. ",
+txt.dtct.ass.spc,". Forkortelser for kolonner: ",abbrxexpl) 
+
 # define a filename to store the flextable in
 tf2 <- paste0(wd00,"/",wd10,"/Table11_v01_NIS_priority_indented.html")
 # store the flextable as a html file
 save_as_html(
-  subheader.title = ft_r02,
+  'subheader.title2' = ft_r02,
   path = tf2,
-  title = "Table_11"
+  title = paste0("Table_11: ", subheader.title)
 )
 # see the flextable
 ft_r02
