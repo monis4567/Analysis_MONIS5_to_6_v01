@@ -308,7 +308,6 @@ GetSpeciesDistributions<-function(AphiaID){
     cat(paste0("  No synonyms found\n"))
     bSynonyms = FALSE
   }
-  
   # ---------- Get all distributions for a given AphiaID -----------------------------------------------
   
   # loop through AphiaID for synonyms
@@ -369,7 +368,7 @@ GetSpeciesDistributions<-function(AphiaID){
     }
   }
   
-  if(!exists("distribution")){
+  if(bFoundDistribution==FALSE){
     
     # check for null values in the record
     if(is.null(AphiaRecord$kingdom)){
@@ -533,12 +532,23 @@ fromJSONsafe <- function(url, max_attempts=3){
         return(result)
       },
       error=function(e) {
-        message('fromJSON returned an error')
-        print(e)
+        if(stringr::str_detect(e$message,"parse error: premature EOF")){
+          #' this occurs when retrieving distributions and we go past the end of records
+          i <- max_attempts
+        }else{
+          message('fromJSON returned an error')
+          print(e)
+        }
       },
       warning=function(w) {
-        message('fromJSON returned an warning')
-        print(w)
+        if(stringr::str_detect(w$message,"status was 'Couldn't resolve host name'")){
+          #' this occurs when calling https://marinespecies.org/rest/AphiaDistributionsByAphiaID 
+          #' and there are no distribution records at all
+          i <- max_attempts
+        }else{
+          message('fromJSON returned an warning')
+          print(w)
+        }
       },
       finally = {
         Sys.sleep(1)
