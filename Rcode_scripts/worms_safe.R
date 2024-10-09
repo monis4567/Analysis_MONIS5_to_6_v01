@@ -308,7 +308,6 @@ GetSpeciesDistributions<-function(AphiaID){
     cat(paste0("  No synonyms found\n"))
     bSynonyms = FALSE
   }
-  
   # ---------- Get all distributions for a given AphiaID -----------------------------------------------
   
   # loop through AphiaID for synonyms
@@ -369,7 +368,7 @@ GetSpeciesDistributions<-function(AphiaID){
     }
   }
   
-  if(!exists("distribution")){
+  if(bFoundDistribution==FALSE){
     
     # check for null values in the record
     if(is.null(AphiaRecord$kingdom)){
