@@ -5,9 +5,9 @@
 #On the remote server. Ensure you have a directory where your 
 #R packages are stored
 # make one here:
-# /home/sknu003/R/R_packages_for_Rv4_1
+# /home/sknu003/R/R_packages_for_Rv4_3
 # load the R module
-# $ module load R/4.1.0-gimkl-2020a
+# $ module load R/4.3.2-foss-2023a
 
 # # First make sure no unneeded modules have been loaded
 # $ module purge
@@ -33,7 +33,7 @@
 
 # # Run this line in R to specify the path to where you want the packages to placed:
 
-# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_1"
+# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_3"
 
 # # Continue by running these lines, one by one in R
 # Sys.setenv(R_LIBS_USER="lib_path01")
@@ -44,12 +44,12 @@
 # .libPaths( c( lib_path01) )
 
 ## Or try pasting one long line with all commands, and installation of the 'taxizedb' library #
-# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_1"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); install.packages(c("taxizedb", "taxize", "tidyverse", "readxl", "worms", "stringr", "dplyr"))
+# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_3"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); install.packages(c("taxizedb", "taxize", "tidyverse", "readxl", "worms", "stringr", "dplyr"))
 
 ## Use this line here below to install a lot of packages needed for doing population genetic analysis
-# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_1"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); if(!require("gaston")){install.packages("gaston", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("hierfstat")){install.packages("hierfstat", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("pegas")){install.packages("pegas")};if(!require("ips")){install.packages("ips", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("tidyverse")){install.packages("tidyverse", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("pals")){install.packages("pals", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require(adegenet)){install.packages("adegenet", repos='http://cran.us.r-project.org') };if(!require(apex)){install.packages("apex", repos='http://cran.us.r-project.org') };if(!require(mmod)){install.packages("mmod", repos='http://cran.us.r-project.org') };if(!require(tidyverse)){install.packages("tidyverse", repos='http://cran.us.r-project.org') };if(!require(pals)){install.packages("pals", repos='http://cran.us.r-project.org') };if(!require(ape)){install.packages("ape", repos='http://cran.us.r-project.org') };if(!require(RColorBrewer)) {install.packages("RColorBrewer", repos='http://cran.us.r-project.org') };if(!require(stringi)){install.packages("stringi", repos='http://cran.us.r-project.org') };if(!require(poppr)){install.packages("poppr", repos='http://cran.us.r-project.org') };if(!require(vegan)){install.packages("vegan", repos='http://cran.us.r-project.org')};if(!require(adegenet)){install.packages("adegenet", repos='http://cran.us.r-project.org')};if(!require(biogeo)){install.packages("biogeo", repos='http://cran.us.r-project.org') }
+# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_3"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); if(!require("gaston")){install.packages("gaston", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("hierfstat")){install.packages("hierfstat", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("pegas")){install.packages("pegas")};if(!require("ips")){install.packages("ips", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("tidyverse")){install.packages("tidyverse", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require("pals")){install.packages("pals", dependencies = TRUE, INSTALL_opts = '--no-lock')};if(!require(adegenet)){install.packages("adegenet", repos='http://cran.us.r-project.org') };if(!require(apex)){install.packages("apex", repos='http://cran.us.r-project.org') };if(!require(mmod)){install.packages("mmod", repos='http://cran.us.r-project.org') };if(!require(tidyverse)){install.packages("tidyverse", repos='http://cran.us.r-project.org') };if(!require(pals)){install.packages("pals", repos='http://cran.us.r-project.org') };if(!require(ape)){install.packages("ape", repos='http://cran.us.r-project.org') };if(!require(RColorBrewer)) {install.packages("RColorBrewer", repos='http://cran.us.r-project.org') };if(!require(stringi)){install.packages("stringi", repos='http://cran.us.r-project.org') };if(!require(poppr)){install.packages("poppr", repos='http://cran.us.r-project.org') };if(!require(vegan)){install.packages("vegan", repos='http://cran.us.r-project.org')};if(!require(adegenet)){install.packages("adegenet", repos='http://cran.us.r-project.org')};if(!require(biogeo)){install.packages("biogeo", repos='http://cran.us.r-project.org') }
 ## Use this line here below to install a lot of packages needed for doing mapping
-# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_1"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); if(!require(scales)){  install.packages("scales")};if(!require(fields)){  install.packages("fields")};if(!require(marmap)){  install.packages("marmap")};if(!require(TeachingDemos)){  install.packages("TeachingDemos")};if(!require(rworldmap)){  install.packages("rworldmap")};if(!require(rworldxtra)){  install.packages("rworldxtra")};require(rworldxtra)if(!require(readxl)){  install.packages("readxl")};if(!require(plyr)){  install.packages("plyr")};if(!require(mapdata)){  install.packages("mapdata")};if(!require(maps)){  install.packages("maps")};if(!require(mapplots)){  install.packages("mapplots")}; if(!require(purrr)){  install.packages("purrr")}
+# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_3"; Sys.setenv(R_LIBS_USER="lib_path01"); .libPaths("lib_path01"); .libPaths( c( lib_path01 , .libPaths() ) ); .libPaths(); .libPaths( c( lib_path01) ); if(!require(scales)){  install.packages("scales")};if(!require(fields)){  install.packages("fields")};if(!require(marmap)){  install.packages("marmap")};if(!require(TeachingDemos)){  install.packages("TeachingDemos")};if(!require(rworldmap)){  install.packages("rworldmap")};if(!require(rworldxtra)){  install.packages("rworldxtra")};require(rworldxtra);if(!require(readxl)){  install.packages("readxl")};if(!require(plyr)){  install.packages("plyr")};if(!require(mapdata)){  install.packages("mapdata")};if(!require(maps)){  install.packages("maps")};if(!require(mapplots)){  install.packages("mapplots")}; if(!require(purrr)){  install.packages("purrr")}
 
 # ## In R 
 # ## Run the lines below without the # sign. The other lines with 2 # signs are helpful comments.
@@ -87,7 +87,7 @@
 # ## error I think it is just fine
 # ## Now quit R 
 
-# ## Now that you have installed all packages in your remote path : "/home/sknu003/R/R_packages_for_Rv4_1"
+# ## Now that you have installed all packages in your remote path : "/home/sknu003/R/R_packages_for_Rv4_3"
 # # You are almost ready to run parts of the code together with their matching slurm sbatch submission scripts
 
 # specify a path to where you have all your packages on your remote node
@@ -100,14 +100,14 @@
 # R
 # Once R is started run the lines here below in section 01
 # #_______________start section 01__________________________________________ 
-# # replace my library path to your own library path
-# #lib_path01 <- "/groups/hologenomics/phq599/data/R_packages_for_Rv3_6"
-# lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_1"
-# Sys.setenv(R_LIBS_USER="lib_path01")
-# .libPaths("lib_path01")
-# # change the path to where the packages should be installed from # see this website: https://stackoverflow.com/questions/15170399/change-r-default-library-path-using-libpaths-in-rprofile-site-fails-to-work
-# .libPaths( c( lib_path01 , .libPaths() ) )
-# .libPaths()
+# replace my library path to your own library path
+#lib_path01 <- "/groups/hologenomics/phq599/data/R_packages_for_Rv3_6"
+lib_path01 <- "/home/sknu003/R/R_packages_for_Rv4_3"
+Sys.setenv(R_LIBS_USER="lib_path01")
+.libPaths("lib_path01")
+# change the path to where the packages should be installed from # see this website: https://stackoverflow.com/questions/15170399/change-r-default-library-path-using-libpaths-in-rprofile-site-fails-to-work
+.libPaths( c( lib_path01 , .libPaths() ) )
+.libPaths()
 # #_______________end section 01__________________________________________
 ## You  will need to specify this path again later on when you are to run this R-script
 ## Before you can start this R-script on the remote server you will need to install the pacakges here
@@ -155,9 +155,9 @@ wdout <- "output11_get_species_from_priority_table"
 # define full path for input directory
 outdir10 <- paste(wd00,wdout, sep="/")
 # remove previous versions of the 'outdir10'
-unlink(outdir10, force = T, recursive = T)
+#unlink(outdir10, force = T, recursive = T)
 # create the 'outdir10' in a new version
-dir.create(outdir10)
+#dir.create(outdir10)
 # define directory with input files to read in
 wddata <- "data"
 #paste together a path for the directory that holds the inputs files
@@ -276,6 +276,7 @@ lstap.f <- list()
 #make an empty list to add genera to
 lstap.g <- list()
 #uspll <- uspll[42]
+AphiaID <- 128900
 #iterate over elements in list of species'
 for (c in uspll){
   # get the matching number in the vector of elements
@@ -326,9 +327,19 @@ for (c in uspll){
     lstap.f[[i]] <- as.data.frame(df_ac01)
   # end iteration over species and their families
   }
-#make the list of data frames a single data frame
+  #make the list of data fr ames a single data frame
 df_ac02 <- as.data.frame(do.call(rbind,lstap.f))
 df_ac02 <- df_ac02[!is.na(df_ac02$AphiaID),]
+# paste the working directory and the output directory together
+wd00_wd10 <- paste(wd00,wdout, sep="/")
+# save the data frame to a csv file
+flNm<-"priority_spc.csv"
+folder_out <- wd00_wd10
+write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
+#read in the table
+df_ac02.2 <- read.csv2(file=paste0(folder_out,"/",flNm),
+                        #row.names=F,col.names=T,
+                        sep=";",header=T)
 # unique(df_ac02$class)
 #unique(df_ac02$valid_name)
 #View(df_ac02)

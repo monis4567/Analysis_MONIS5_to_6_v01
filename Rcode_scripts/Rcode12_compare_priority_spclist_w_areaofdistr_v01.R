@@ -13,10 +13,10 @@
 # # $ module purge
 # # You can use 'module spider R' to see which version of R is available on the remote server
 # # $ module spider R
-# # # I will try installing for Rv4_0_2
+# # # I will try installing for Rv4_3
 # # # Start out by making a directory where all the packages can be placed inside
-# # $ mkdir R_packages_for_Rv4_0_2
-# # $ cd R_packages_for_Rv4_0_2/
+# # $ mkdir R_packages_for_Rv4_3
+# # $ cd R_packages_for_Rv4_3/
 # 
 # # # start up R by typing R
 # 
@@ -93,7 +93,7 @@
 # # specify a path to where you have all your packages on your remote node
 # # NOTICE ! In order to have your packages available on the remote path, you will need to logon to your node, 
 # # and make a directory 
-# # called -e.g. : R_packages_for_Rv4_0_2
+# # called -e.g. : R_packages_for_Rv4_3
 # # Then load the R module
 # # module load R/v4.0.2
 # # Then start R byt typing:

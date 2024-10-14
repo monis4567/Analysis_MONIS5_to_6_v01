@@ -223,7 +223,7 @@ df_r04.2 <- df_r04 %>% select(Phylum, Klasse, Orden, Familie, Genus_og_species_o
 # select that are not taxonomical categories, and which have not been modified
 df_r04.3 <- df_r04 %>% select(Obs_Dk,Nseq_NCBI_for_IkkHjmM_Art, Mngl_Nseq_NCBI_for_tbsl_art_IkkHjmM_Art, 
                   Mngl_Nseq_NCBI_for_tbsl_art_i_fam_IkkHjmM_Art, Mngl_Nseq_NCBI_for_tbsl_art_i_ord_IkkHjmM_Art, 
-                  Mngl_Nseq_NCBI_for_tbsl_art_i_gen_IkkHjmM_Art, PrNr)
+                  Mngl_Nseq_NCBI_for_tbsl_art_i_gen_IkkHjmM_Art)
 # combine data frames again
 df_r05 <- cbind(df_r04.2, df_r04.3)
 
@@ -233,7 +233,7 @@ oldNms.f.clmns <- (colnames(df_r05))
 replc2.f.clmns <- c("Phyl", "Klas", "Orde", "Famil", "GeSpAu", 
   "ODK", "nS", "mS", 
   "mSs", "mSo", 
-  "mSg", "PN")
+  "mSg")
 # replace column names so that column names are even shorter
 colnames(df_r05) <- replc2.f.clmns
 

@@ -280,7 +280,9 @@ GetSpeciesID<-function(searchtext){
 
 #AphiaID <- as.vector(unlist(AphiaList[1]))
 #AphiaID <- as.vector(unlist(Chatt.AphID))
- AphiaID <- 1507114
+# AphiaID <- 1507114
+AphiaID <- 1507114
+AphiaID <- 128900
 GetSpeciesDistributions<-function(AphiaID){
   
   url<-sprintf("http://marinespecies.org/rest/AphiaRecordByAphiaID/%d",AphiaID)
