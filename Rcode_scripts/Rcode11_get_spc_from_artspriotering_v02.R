@@ -155,9 +155,9 @@ wdout <- "output11_get_species_from_priority_table"
 # define full path for input directory
 outdir10 <- paste(wd00,wdout, sep="/")
 # remove previous versions of the 'outdir10'
-#unlink(outdir10, force = T, recursive = T)
+unlink(outdir10, force = T, recursive = T)
 # create the 'outdir10' in a new version
-#dir.create(outdir10)
+dir.create(outdir10)
 # define directory with input files to read in
 wddata <- "data"
 #paste together a path for the directory that holds the inputs files
@@ -327,7 +327,7 @@ for (c in uspll){
     lstap.f[[i]] <- as.data.frame(df_ac01)
   # end iteration over species and their families
   }
-  #make the list of data fr ames a single data frame
+  #make the list of data frames a single data frame
 df_ac02 <- as.data.frame(do.call(rbind,lstap.f))
 df_ac02 <- df_ac02[!is.na(df_ac02$AphiaID),]
 # paste the working directory and the output directory together
@@ -337,9 +337,9 @@ flNm<-"priority_spc.csv"
 folder_out <- wd00_wd10
 write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
 #read in the table
-df_ac02.2 <- read.csv2(file=paste0(folder_out,"/",flNm),
-                        #row.names=F,col.names=T,
-                        sep=";",header=T)
+# df_ac02.2 <- read.csv2(file=paste0(folder_out,"/",flNm),
+#                         #row.names=F,col.names=T,
+#                         sep=";",header=T)
 # unique(df_ac02$class)
 #unique(df_ac02$valid_name)
 #View(df_ac02)

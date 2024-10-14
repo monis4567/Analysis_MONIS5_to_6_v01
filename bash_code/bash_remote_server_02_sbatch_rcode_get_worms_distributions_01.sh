@@ -21,6 +21,13 @@ module purge
 #module load R/4.1.0-gimkl-2020a
 module load R/4.3.2-foss-2023a
 
-#start the bash script that iterates over compressed gz files
-# ./Rcode02_compare_priority_spclist_w_areaofdistr_v01.R
-./Rcode12_compare_priority_spclist_w_areaofdistr_v01.R
+
+#change directory to where the R code is stored
+RCLIB=$(echo "Rcode_scripts")
+cd $PWD
+cd ../
+
+#start the R script
+#./Rcode01_get_spc_from_artspriotering.R
+./${RCLIB}/Rcode12_compare_priority_spclist_w_areaofdistr_v01.R
+
