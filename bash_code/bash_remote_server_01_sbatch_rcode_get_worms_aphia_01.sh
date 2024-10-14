@@ -22,7 +22,7 @@ module purge
 module load R/4.3.2-foss-2023a
 
 #change directory to where the R code is stored
-RCLIB=$("Rcode_scripts")
+RCLIB=$(echo "Rcode_scripts")
 cd $PWD
 cd ../
 
