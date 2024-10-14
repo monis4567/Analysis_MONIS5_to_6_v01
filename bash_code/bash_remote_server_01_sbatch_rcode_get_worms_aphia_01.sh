@@ -21,9 +21,11 @@ module purge
 ##module load R/4.1.0-gimkl-2020a
 module load R/4.3.2-foss-2023a
 
-#change directory to where teh R code is stored
-RCLIB=$(echo "$PWD/"Rcode_scripts"/")
-cd $RCLIB
+#change directory to where the R code is stored
+RCLIB=$("Rcode_scripts")
+cd $PWD
+cd ../
+
 #start the bash script that iterates over compressed gz files
 #./Rcode01_get_spc_from_artspriotering.R
-./Rcode11_get_spc_from_artspriotering_v02.R
+./${RCLIB}/Rcode11_get_spc_from_artspriotering_v02.R
