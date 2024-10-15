@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J 01
 #SBATCH -A uoa00029         # Project Account
-#SBATCH --time=12:00:00     # Walltime
+#SBATCH --time=48:00:00     # Walltime
 #SBATCH --mem-per-cpu=1024  # memory/cpu (in MB)
 #SBATCH --cpus-per-task=1
 ###SBATCH --gres=gpu ## I could not get this part working in Apr-2019, and commented it out
