@@ -336,55 +336,55 @@ wd00_wd10 <- paste(wd00,wdout, sep="/")
 flNm<-"priority_spc.csv"
 folder_out <- wd00_wd10
 write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
-#read in the table
-# df_ac02.2 <- read.csv2(file=paste0(folder_out,"/",flNm),
-#                         #row.names=F,col.names=T,
-#                         sep=";",header=T)
-# unique(df_ac02$class)
-#unique(df_ac02$valid_name)
-#View(df_ac02)
-nAID <- length(df_ac02$AphiaID)
-nAID <- seq(1,nAID,1)
-#nAID <- seq(1,33,1)
-lst_AID <- list()
-#
-for (AID in nAID)
-  {
-  A <- df_ac02$AphiaID[AID]
-  #A <- 1507114
-  AIDD <- GetSpeciesDistributions(A)
-  lst_AID[[AID]] <- AIDD 
-}
-#bind the rows in each list in to one data frame
-df_l01 <- data.table::rbindlist(lst_AID, fill=T)
-df_l01 <- as.data.frame(df_l01)
-# limit to only aline species
-df_l01A <- df_l01[(df_l01$establishmentMeans=="Alien"),]
- unique(df_l01A$ScientificName)
-
-locatNms <- df_l01 %>% dplyr::distinct( locality) 
-locatNms <- locatNms[order(locatNms$locality),]
-
-NEAlocs <- c("Belgian Exclusive Economic Zone",
-"Belgium" ,
-"Atlantic Europe",                        
-"European waters (ERMS scope)" ,
-"Germany",
-"Netherlands",
-"North Sea",
-"United Kingdom" ,
-"West Coast of Scotland" )
-NEAlocs <- paste(NEAlocs, collapse = "|")
-df_l02 <- df_l01[grepl(NEAlocs,df_l01$locality),]
-NEAspc <- unique(df_l02$ScientificName)
-
-# z04 <- df_ac02[df_ac02$class=="Actinopteri",]
-# View(z04)
-df_ac03 <- df_ac02[grep(" ",df_ac02$valid_name),]
-#unique(df_ac03$class)
-#
-flNm<-"priority_spc.csv"
-folder_out <- wd00_wd10
-write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
+# #read in the table
+# # df_ac02.2 <- read.csv2(file=paste0(folder_out,"/",flNm),
+# #                         #row.names=F,col.names=T,
+# #                         sep=";",header=T)
+# # unique(df_ac02$class)
+# #unique(df_ac02$valid_name)
+# #View(df_ac02)
+# nAID <- length(df_ac02$AphiaID)
+# nAID <- seq(1,nAID,1)
+# #nAID <- seq(1,33,1)
+# lst_AID <- list()
+# #
+# for (AID in nAID)
+#   {
+#   A <- df_ac02$AphiaID[AID]
+#   #A <- 1507114
+#   AIDD <- GetSpeciesDistributions(A)
+#   lst_AID[[AID]] <- AIDD 
+# }
+# #bind the rows in each list in to one data frame
+# df_l01 <- data.table::rbindlist(lst_AID, fill=T)
+# df_l01 <- as.data.frame(df_l01)
+# # limit to only aline species
+# df_l01A <- df_l01[(df_l01$establishmentMeans=="Alien"),]
+#  unique(df_l01A$ScientificName)
+# 
+# locatNms <- df_l01 %>% dplyr::distinct( locality) 
+# locatNms <- locatNms[order(locatNms$locality),]
+# 
+# NEAlocs <- c("Belgian Exclusive Economic Zone",
+# "Belgium" ,
+# "Atlantic Europe",                        
+# "European waters (ERMS scope)" ,
+# "Germany",
+# "Netherlands",
+# "North Sea",
+# "United Kingdom" ,
+# "West Coast of Scotland" )
+# NEAlocs <- paste(NEAlocs, collapse = "|")
+# df_l02 <- df_l01[grepl(NEAlocs,df_l01$locality),]
+# NEAspc <- unique(df_l02$ScientificName)
+# 
+# # z04 <- df_ac02[df_ac02$class=="Actinopteri",]
+# # View(z04)
+# df_ac03 <- df_ac02[grep(" ",df_ac02$valid_name),]
+# #unique(df_ac03$class)
+# #
+# flNm<-"priority_spc.csv"
+# folder_out <- wd00_wd10
+# write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
 
 #

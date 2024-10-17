@@ -212,6 +212,7 @@ flNm <- "priority_spc.csv"
 df_ac02.2 <- read.csv2(file=paste0(wdprsptbl,"/",flNm),
                         #row.names=F,col.names=T,
                         sep=";",header=T)
+
 #unique(df_ac02$class)
 #unique(df_ac02$valid_name)
 # copy the data frame to a new data frame 
@@ -225,6 +226,7 @@ lst_AID <- list()
 for (AID in nAID)
 {
   A <- df_ac02$AphiaID[AID]
+  print(paste("the Aphia ID is : ",A))
   #A <- 1507114
   AIDD <- GetSpeciesDistributions(A)
   lst_AID[[AID]] <- AIDD 
