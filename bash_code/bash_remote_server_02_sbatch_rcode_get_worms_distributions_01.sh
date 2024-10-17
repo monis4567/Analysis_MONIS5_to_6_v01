@@ -29,5 +29,5 @@ cd ../
 
 #start the R script
 #./Rcode01_get_spc_from_artspriotering.R
-./${RCLIB}/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R.R
+./${RCLIB}/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
 
