@@ -149,6 +149,9 @@ library("worrms")
 wd00 <- getwd()
 # wd00 <- "/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6/Analysis_MONIS5_to_6_v01"
 # setwd(wd00)
+library(worrms)
+# get the extra codes with functions
+source(paste0(wd00,"/Rcode_scripts/worms_safe.R"))
 
 #define directory with output flies
 wdout <- "output12_limit_species_from_priority_table"
