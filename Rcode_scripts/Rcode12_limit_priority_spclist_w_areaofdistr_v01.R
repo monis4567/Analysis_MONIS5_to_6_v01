@@ -226,6 +226,7 @@ lst_AID <- list()
 for (AID in nAID)
 {
   A <- df_ac02$AphiaID[AID]
+  A <- as.numeric(A)
   print(paste("the Aphia ID is : ",A))
   #A <- 1507114
   AIDD <- GetSpeciesDistributions(A)
