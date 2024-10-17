@@ -212,8 +212,8 @@ flNm <- "priority_spc.csv"
 df_ac02.2 <- read.csv2(file=paste0(wdprsptbl,"/",flNm),
                         #row.names=F,col.names=T,
                         sep=";",header=T)
-unique(df_ac02$class)
-unique(df_ac02$valid_name)
+#unique(df_ac02$class)
+#unique(df_ac02$valid_name)
 # copy the data frame to a new data frame 
 df_ac02 <- df_ac02.2
 #View(df_ac02)
