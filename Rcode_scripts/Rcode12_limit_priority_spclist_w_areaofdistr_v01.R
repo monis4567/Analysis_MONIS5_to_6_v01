@@ -211,6 +211,8 @@ df_ac02.2 <- read.csv2(file=paste0(wdprsptbl,"/",flNm),
                         sep=";",header=T)
 unique(df_ac02$class)
 unique(df_ac02$valid_name)
+# copy the data frame to a new data frame 
+df_ac02 <- df_ac02.2
 #View(df_ac02)
 nAID <- length(df_ac02$AphiaID)
 nAID <- seq(1,nAID,1)
