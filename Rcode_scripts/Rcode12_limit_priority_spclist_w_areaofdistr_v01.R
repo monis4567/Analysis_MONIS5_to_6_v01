@@ -226,7 +226,11 @@ lst_AID <- list()
 for (AID in nAID)
 {
   A <- df_ac02$AphiaID[AID]
-  A <- as.numeric(A)
+  # ensure the Aphia ID is numeric
+  A<- as.numeric(A)
+  # ensure the Aphia ID is a double, because the
+  # 'GetSpeciesDistributions' uses 'sprintf' with '%d'
+  A <- as.double(A)
   print(paste("the Aphia ID is : ",A))
   #A <- 1507114
   AIDD <- GetSpeciesDistributions(A)
