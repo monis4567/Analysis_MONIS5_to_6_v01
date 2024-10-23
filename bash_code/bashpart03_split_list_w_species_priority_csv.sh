@@ -55,7 +55,7 @@ echo "${HDLN}"
 # the '-l 3' option dictates the split command to put 3 lines per file created
 # the '-a 3' option dictates the split command to have 3 digits in the filenames created 
 # for each file created, e.g. ..001.., ..002.. and so on
-head -13 "${FPINF}" | tail -n +2 | split -l 3 -d -a 3 --additional-suffix=.txt /dev/stdin "${OPD}"/splt_priority_ 
+head -99 "${FPINF}" | tail -n +2 | split -l 10 -d -a 3 --additional-suffix=.txt /dev/stdin "${OPD}"/splt_priority_ 
 #get a list of files in the directory
 #ls -lh "${OPD}" 
 
@@ -97,9 +97,11 @@ for filename in "${OPD}"/*.txt; do
     
     cat "$BASDIR""$PRJDIR"/Rcode_scripts/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R |
     # by using sed, and append a number (that equals to splitted file) to the end of the file
-    # notice that sed msut escape the quotation marks and the punctuation mark
+    # notice that sed must escape the quotation marks and the punctuation mark
     
     sed -e "s:flNm <- \"priority_spc\.csv\":flNm <- \"$FlNm\":g" |
+    sed -e "s:flNm<-\"location_for_priority_spc.csv\":flNm <- \"location_for_$ApSe_filename\":g" |
+    #flNm<-"location_for_priority_spc.csv"
     sed -e "s:flNm<-\"limited_priority_spc\.csv\":flNm <- \"$ApSe_filename\":g" > "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
     
     #
@@ -110,7 +112,7 @@ for filename in "${OPD}"/*.txt; do
    	# and replace in this file using sed
 	sed -e "s:#SBATCH -J 01:#SBATCH -J $NofF:g" |
 	sed -e "s:#SBATCH -o stdout_01\.txt:#SBATCH -o stdout_$NofF.txt:g" |
-	sed -e "s:#SBATCH -e stderr_01\.txt:#SBATCH -o stdeer_$NofF.txt:g" > "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
+	sed -e "s:#SBATCH -e stderr_01\.txt:#SBATCH -e stderr_$NofF.txt:g" > "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
 
 	# modify the files to ensure they are executable when the are to be started as jobs
 	chmod 755 "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R

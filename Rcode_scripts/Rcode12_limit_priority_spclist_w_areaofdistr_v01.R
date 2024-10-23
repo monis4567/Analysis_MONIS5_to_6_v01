@@ -151,6 +151,7 @@ wd00 <- getwd()
 # setwd(wd00)
 library(worrms)
 # get the extra codes with functions
+#source(paste0(wd00,"/Rcode_scripts/worms_safe.R"))
 source(paste0(wd00,"/worms_safe.R"))
 
 #define directory with output flies
@@ -227,8 +228,11 @@ nAID <- seq(1,nAID,1)
 #nAID <- seq(1,33,1)
 lst_AID <- list()
 #
+# use two AphiaIDs to check the loop
+# nAID <- c(713002,140430)
 for (AID in nAID)
 {
+  #A<- AID
   A <- df_ac02$AphiaID[AID]
   # ensure the Aphia ID is numeric
   A<- as.numeric(A)
@@ -245,8 +249,8 @@ df_l01 <- data.table::rbindlist(lst_AID, fill=T)
 df_l01 <- as.data.frame(df_l01)
 # limit to only aline species
 df_l01A <- df_l01[(df_l01$establishmentMeans=="Alien"),]
-unique(df_l01A$ScientificName)
-
+#unique(df_l01A$ScientificName)
+#View(df_l01A)
 locatNms <- df_l01 %>% dplyr::distinct( locality) 
 locatNms <- locatNms[order(locatNms$locality),]
 
@@ -265,11 +269,12 @@ NEAspc <- unique(df_l02$ScientificName)
 
 # z04 <- df_ac02[df_ac02$class=="Actinopteri",]
 # View(z04)
-df_ac03 <- df_ac02[grep(" ",df_ac02$valid_name),]
+# df_ac03 <- df_ac02[grep(" ",df_ac02$valid_name),]
 #unique(df_ac03$class)
 #
 flNm<-"limited_priority_spc.csv"
 folder_out <- outdir
 write.table(df_ac02,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
-
+flNm<-"location_for_priority_spc.csv"
+write.table(df_l02,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
 #
