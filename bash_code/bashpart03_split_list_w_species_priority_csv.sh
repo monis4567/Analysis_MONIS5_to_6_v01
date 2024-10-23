@@ -55,7 +55,11 @@ echo "${HDLN}"
 # the '-l 3' option dictates the split command to put 3 lines per file created
 # the '-a 3' option dictates the split command to have 3 digits in the filenames created 
 # for each file created, e.g. ..001.., ..002.. and so on
-head -99 "${FPINF}" | tail -n +2 | split -l 10 -d -a 3 --additional-suffix=.txt /dev/stdin "${OPD}"/splt_priority_ 
+
+# use this line to only get the first 99 lines
+#head -99 "${FPINF}" | tail -n +2 | split -l 10 -d -a 3 --additional-suffix=.txt /dev/stdin "${OPD}"/splt_priority_ 
+# use this line to only get all lines, and split per 1500
+cat "${FPINF}" | tail -n +2 | split -l 1500 -d -a 3 --additional-suffix=.txt /dev/stdin "${OPD}"/splt_priority_ 
 #get a list of files in the directory
 #ls -lh "${OPD}" 
 

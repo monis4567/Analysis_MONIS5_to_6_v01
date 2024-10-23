@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J 01
 #SBATCH -A uoa00029         # Project Account
-#SBATCH --time=1:00:00     # Walltime
+#SBATCH --time=24:00:00     # Walltime
 #SBATCH --mem-per-cpu=128  # memory/cpu (in MB)
 #SBATCH --cpus-per-task=1
 ###SBATCH --gres=gpu ## I could not get this part working in Apr-2019, and commented it out
@@ -30,3 +30,8 @@ RCLIB=$(echo "Rcode_scripts")
 #./Rcode01_get_spc_from_artspriotering.R
 #./${RCLIB}/Rcode11_get_spc_from_artspriotering_v02.R
 ./Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
+
+# NoJ=$(seq 51344805 51344810)
+# for N in $NoJ; do scancel $N; done
+# NoJ=$(seq 51344805 51344810)
+# for N in $(seq 51344805 51344810); do scancel $N; done
