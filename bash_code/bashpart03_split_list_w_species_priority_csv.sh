@@ -84,7 +84,9 @@ for filename in "${OPD}"/*.txt; do
     	sed -e "s:${OPD}/splt_priority_:ApSe_:g" | 
     	sed 's/\.txt/\.csv/g')
     # append new directory and filename
-    ApSe_filename=$(echo ""${OPD}"/aphia_retrieve_"$NofF"/"$ApSe_filename"")
+    ApSe_Flnm=$(echo ""${OPD}"/aphia_retrieve_"$NofF"/"$ApSe_filename"")
+    locApSe_Flnm=$(echo ""${OPD}"/aphia_retrieve_"$NofF"/location_for_"$ApSe_filename"")
+    #
     FlNm=$(echo ""${OPD}"/aphia_retrieve_"$NofF"/"$FlNm"")
     # make a directory to move the splitted priority list into
     mkdir "${OPD}"/aphia_retrieve_"$NofF"
@@ -100,9 +102,9 @@ for filename in "${OPD}"/*.txt; do
     # notice that sed must escape the quotation marks and the punctuation mark
     
     sed -e "s:flNm <- \"priority_spc\.csv\":flNm <- \"$FlNm\":g" |
-    sed -e "s:flNm<-\"location_for_priority_spc.csv\":flNm <- \"location_for_$ApSe_filename\":g" |
+    sed -e "s:flNm<-\"location_for_priority_spc.csv\":flNm <- \"$locApSe_Flnm\":g" |
     #flNm<-"location_for_priority_spc.csv"
-    sed -e "s:flNm<-\"limited_priority_spc\.csv\":flNm <- \"$ApSe_filename\":g" > "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
+    sed -e "s:flNm<-\"limited_priority_spc\.csv\":flNm <- \"$ApSe_Flnm\":g" > "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
     
     #
     # cat "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01_"$NofF".R | grep ApSe
