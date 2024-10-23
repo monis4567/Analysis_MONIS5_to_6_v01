@@ -270,6 +270,6 @@ df_ac03 <- df_ac02[grep(" ",df_ac02$valid_name),]
 #
 flNm<-"limited_priority_spc.csv"
 folder_out <- outdir
-write.table(df_ac02,file=paste0(folder_out,"/",flNm),row.names=F,col.names=T,sep=";",quote=F)
+write.table(df_ac02,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
 
 #

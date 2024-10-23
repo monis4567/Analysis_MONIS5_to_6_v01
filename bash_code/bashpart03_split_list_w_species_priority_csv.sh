@@ -113,6 +113,8 @@ for filename in "${OPD}"/*.txt; do
 	# modify the files to ensure they are executable when the are to be started as jobs
 	chmod 755 "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
 	chmod 755 "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
+# start the bash remote slurm job
+    sbatch "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
 done
 
 #ls -lh "${OPD}"/aphia_retrieve_001
