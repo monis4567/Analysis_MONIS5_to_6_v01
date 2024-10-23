@@ -8,11 +8,12 @@ WD=$(pwd)
 #https://stackoverflow.com/questions/3790101/bash-script-regex-to-get-directory-path-up-nth-levels
 PARENT=$(dirname $PWD)
 
-BASDIR="/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6"
+#BASDIR="/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6"
 BASDIR="/home/sknu003/uoa00029_runs"
 PRIDIR="/Analyse_MONIS5_6_2024Oct/Analysis_MONIS5_to_6_v01/output11_get_species_from_priority_table"
+PRJDIR="/Analyse_MONIS5_6_2024Oct/Analysis_MONIS5_to_6_v01"
 #PRIDIR="/priority_list_prepared_from_worms"
-OUTIDIR="/Analyse_MONIS5_6_v03_2024Oct/split_priority_list_prepared_from_worms"
+OUTDIR="/Analyse_MONIS5_6_v03_2024Oct/split_priority_list_prepared_from_worms"
 INFL="/priority_spc.csv"
 
 # see how to How to concatenate string variables in Bash
@@ -20,8 +21,9 @@ INFL="/priority_spc.csv"
 # this will be the full path to the input file
 FPINF="${BASDIR}${PRIDIR}${INFL}"
 
+
 #make a path to the output directory
-OPD="${BASDIR}${OUTIDIR}"
+OPD="${BASDIR}${OUTDIR}"
 
 echo "$OPD"
 # remove 
@@ -87,11 +89,11 @@ for filename in "${OPD}"/*.txt; do
     # move the splitted priority list into
     mv $filename "${OPD}"/aphia_retrieve_"$NofF"
     # copy the 'worms_safe.R' file into the directory where the splitted priority list is placed
-    cp "$BASDIR"/Analysis_MONIS5_to_6_v01/Rcode_scripts/worms_safe.R "${OPD}"/aphia_retrieve_"$NofF"/. 
+    cp "$BASDIR"/"$PRJDIR"/Rcode_scripts/worms_safe.R "${OPD}"/aphia_retrieve_"$NofF"/. 
     # get the Rcode12 that is supposed to query the worms database with the aphiaIDs
     # write the Rcode12-file out and replace in it
     
-    cat "$BASDIR"/Analysis_MONIS5_to_6_v01/Rcode_scripts/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R |
+    cat "$BASDIR"/"$PRJDIR"/Rcode_scripts/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R |
     # by using sed, and append a number (that equals to splitted file) to the end of the file
     # notice that sed msut escape the quotation marks and the punctuation mark
     
@@ -102,7 +104,7 @@ for filename in "${OPD}"/*.txt; do
     # cat "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01_"$NofF".R | grep ApSe
 
     # also get the sbatch submission file 
-   	cat "$BASDIR"/Analysis_MONIS5_to_6_v01/bash_code/bash_remote_server_01_sbatch_rcode_get_worms_aphia_01.sh |
+   	cat "$BASDIR"/"$PRJDIR"/bash_code/bash_remote_server_01_sbatch_rcode_get_worms_aphia_01.sh |
    	# and replace in this file using sed
 	sed -e "s:#SBATCH -J 01:#SBATCH -J $NofF:g" |
 	sed -e "s:#SBATCH -o stdout_01\.txt:#SBATCH -o stdout_$NofF.txt:g" |
