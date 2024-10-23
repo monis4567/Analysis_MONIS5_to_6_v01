@@ -2,7 +2,7 @@
 #SBATCH -J 02
 #SBATCH -A uoa00029         # Project Account
 #SBATCH --time=72:00:00     # Walltime
-# ###SBATCH --mem-per-cpu=1024  # memory/cpu (in MB)
+# ###SBATCH --mem-per-cpu=128  # memory/cpu (in MB)
 #SBATCH --mem-per-cpu=512  # memory/cpu (in MB)
 #SBATCH --cpus-per-task=1
 ###SBATCH --gres=gpu ## I could not get this part working in Apr-2019, and commented it out
@@ -30,5 +30,6 @@ cd ../
 
 #start the R script
 #./Rcode01_get_spc_from_artspriotering.R
-./${RCLIB}/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
+./${RCLIB}/Rcode11_get_spc_from_artspriotering_v02.R
+
 

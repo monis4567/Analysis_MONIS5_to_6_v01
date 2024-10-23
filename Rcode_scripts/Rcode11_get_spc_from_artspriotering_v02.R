@@ -330,6 +330,9 @@ for (c in uspll){
   #make the list of data frames a single data frame
 df_ac02 <- as.data.frame(do.call(rbind,lstap.f))
 df_ac02 <- df_ac02[!is.na(df_ac02$AphiaID),]
+# make sure that all columns with ';' are substituted with ','
+# as the ';' is used later on as seperator in the csv file
+df_ac02 <- as.data.frame(lapply(df_ac02, function(y) gsub(";", ",", y)))
 # paste the working directory and the output directory together
 wd00_wd10 <- paste(wd00,wdout, sep="/")
 # save the data frame to a csv file

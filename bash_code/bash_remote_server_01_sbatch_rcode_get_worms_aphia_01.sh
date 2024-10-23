@@ -34,4 +34,4 @@ RCLIB=$(echo "Rcode_scripts")
 # NoJ=$(seq 51344805 51344810)
 # for N in $NoJ; do scancel $N; done
 # NoJ=$(seq 51344805 51344810)
-# for N in $(seq 51344835 51344840); do scancel $N; done
+# for N in $(seq 51344881 51344998); do scancel $N; done
