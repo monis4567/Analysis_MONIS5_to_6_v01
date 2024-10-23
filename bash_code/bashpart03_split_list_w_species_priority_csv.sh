@@ -65,6 +65,8 @@ TXTF1=$(ls "${OPD}" | grep 'txt' | head -1)
 #echo "$TXTF1"
 # loop over files
 for filename in "${OPD}"/*.txt; do
+    # ensure the loop starts in the correct directory
+    cd "$WD"
 	#echo "this is the filenames"
     #echo "$filename"
     # insert a text at the beginning of a file?
@@ -114,13 +116,12 @@ for filename in "${OPD}"/*.txt; do
 	chmod 755 "${OPD}"/aphia_retrieve_"$NofF"/Rcode12_limit_priority_spclist_w_areaofdistr_v01.R
 	chmod 755 "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
     
-done
-# loop over number of files
-for Nf in $NofF;
-do
-    cd "${OPD}"/aphia_retrieve_"$Nf"/
+
+    #change to each directory 
+    cd "${OPD}"/aphia_retrieve_"$NofF"/
     # start the bash remote slurm job
-    sbatch "${OPD}"/aphia_retrieve_"$Nf"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
+    sbatch "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
 done
+
 #ls -lh "${OPD}"/aphia_retrieve_001
 
