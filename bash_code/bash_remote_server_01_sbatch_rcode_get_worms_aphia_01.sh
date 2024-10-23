@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J 01
 #SBATCH -A uoa00029         # Project Account
-#SBATCH --time=48:00:00     # Walltime
-#SBATCH --mem-per-cpu=1024  # memory/cpu (in MB)
+#SBATCH --time=24:00:00     # Walltime
+#SBATCH --mem-per-cpu=256  # memory/cpu (in MB)
 #SBATCH --cpus-per-task=1
 ###SBATCH --gres=gpu ## I could not get this part working in Apr-2019, and commented it out
 #SBATCH --ntasks=1
@@ -23,9 +23,10 @@ module load R/4.3.2-foss-2023a
 
 #change directory to where the R code is stored
 RCLIB=$(echo "Rcode_scripts")
-cd $PWD
-cd ../
+#cd $PWD
+#cd ../
 
-#start the bash script that iterates over compressed gz files
+#start the bash script that iterates over the splitted aphia ID files
 #./Rcode01_get_spc_from_artspriotering.R
-./${RCLIB}/Rcode11_get_spc_from_artspriotering_v02.R
+#./${RCLIB}/Rcode11_get_spc_from_artspriotering_v02.R
+./Rcode12_limit_priority_spclist_w_areaofdistr_v01.R

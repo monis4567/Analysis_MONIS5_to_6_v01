@@ -151,22 +151,25 @@ wd00 <- getwd()
 # setwd(wd00)
 library(worrms)
 # get the extra codes with functions
-source(paste0(wd00,"/Rcode_scripts/worms_safe.R"))
+source(paste0(wd00,"/worms_safe.R"))
 
 #define directory with output flies
-wdout <- "output12_limit_species_from_priority_table"
+#wdout <- "output12_limit_species_from_priority_table"
 #define directory with output flies
-wdout11 <- "output11_get_species_from_priority_table"
+#wdout11 <- "output11_get_species_from_priority_table"
 # define full path for input directory
-outdir <- paste(wd00,wdout, sep="/")
+#outdir <- paste(wd00,wdout, sep="/")
+outdir <- wd00
 # remove previous versions of the 'outdir'
-unlink(outdir, force = T, recursive = T)
+#unlink(outdir, force = T, recursive = T)
 # create the 'outdir' in a new version
-dir.create(outdir)
+#dir.create(outdir)
 # define directory with input files to read in
-wddata <- "data"
+#wddata <- "data"
+wddata <- wd00
 #paste together a path for the directory that holds the inputs files
-wd00_wddata <- paste(wd00,wddata,sep="/")
+#wd00_wddata <- paste(wd00,wddata,sep="/")
+wd00_wddata <- wd00
 
 ## in section 02 here below 
 ## installing these packages is commented out, as they are not needed when you are to run this R-script
@@ -203,13 +206,14 @@ library(stringr)
 # paste path and directory together
 
 
-wddata <- "data"
-wd00_wddata <- paste(wd00,wddata,sep="/")
-folder_out10 <- paste0(wd00,"/",wdout11)
-wdprsptbl <- "/home/sknu003/uoa00029_runs/Analyse_MONIS5_6_v02_2024Oct/Analysis_MONIS5_to_6_v01/output11_get_species_from_priority_table"
+# wddata <- "data"
+# wd00_wddata <- paste(wd00,wddata,sep="/")
+folder_out10 <- wd00
+# wdprsptbl <- "/home/sknu003/uoa00029_runs/Analyse_MONIS5_6_v02_2024Oct/Analysis_MONIS5_to_6_v01/output11_get_species_from_priority_table"
+# wdprsptbl <- DIR_THAT_HAS_THE_SPLIT_PRIORITY_TABLE
 flNm <- "priority_spc.csv"
 #read in the table
-df_ac02.2 <- read.csv2(file=paste0(wdprsptbl,"/",flNm),
+df_ac02.2 <- read.csv2(file=flNm,
                         #row.names=F,col.names=T,
                         sep=";",header=T)
 
