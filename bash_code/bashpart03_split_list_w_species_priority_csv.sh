@@ -12,7 +12,7 @@ BASDIR="/home/hal9000/Documents/Documents/NIVA_Ansaettelse_2021/MONIS6"
 BASDIR="/home/sknu003/uoa00029_runs"
 PRIDIR="/Analyse_MONIS5_6_2024Oct/Analysis_MONIS5_to_6_v01/output11_get_species_from_priority_table"
 #PRIDIR="/priority_list_prepared_from_worms"
-OUTIDIR="Analyse_MONIS5_6_v03_2024Oct/split_priority_list_prepared_from_worms"
+OUTIDIR="/Analyse_MONIS5_6_v03_2024Oct/split_priority_list_prepared_from_worms"
 INFL="/priority_spc.csv"
 
 # see how to How to concatenate string variables in Bash
