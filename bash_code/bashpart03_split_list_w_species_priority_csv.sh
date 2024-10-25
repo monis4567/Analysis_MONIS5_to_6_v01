@@ -129,6 +129,9 @@ for filename in "${OPD}"/*.txt; do
     cd "${OPD}"/aphia_retrieve_"$NofF"/
     # start the bash remote slurm job
     sbatch "${OPD}"/aphia_retrieve_"$NofF"/bash_remote_server_01_sbatch_rcode_get_worms_aphia.sh
+    # pause before submitting next
+    # As I suspect that not all can run at the same time
+    sleep 2h
 done
 
 #ls -lh "${OPD}"/aphia_retrieve_001
