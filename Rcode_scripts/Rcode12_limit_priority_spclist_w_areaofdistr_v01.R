@@ -274,7 +274,7 @@ NEAspc <- unique(df_l02$ScientificName)
 #
 flNm<-"limited_priority_spc.csv"
 folder_out <- outdir
-write.table(df_ac02,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
+write.table(df_l01,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
 flNm<-"location_for_priority_spc.csv"
 write.table(df_l02,file=paste0(flNm),row.names=F,col.names=T,sep=";",quote=F)
 #

@@ -634,6 +634,7 @@ p05 <- ggplot(data = world) +
 # plot all points with crosses, to show were sampling was performed
 # NOTE that this part that plots the crosses as placed first, so that 
 # the next layers with numbered points are placed on top, and will cover
+#dfg05$yer_ssn2
 # the crosses
 geom_point(data=dfg05, 
            aes( x =declon, 
@@ -667,7 +668,7 @@ geom_point(data=dfg05,
   #                      labeller = label_bquote(cols =
   #                                                italic(.(as.character(yer_ssn))))  ) +
   # 
-  ggplot2::facet_wrap( ~ yer_ssn,
+  ggplot2::facet_wrap( ~ yer_ssn2,
                        drop=FALSE,
                        dir="h") +
   
@@ -678,8 +679,8 @@ geom_point(data=dfg05,
     size = 8),
     strip.background = element_rect(fill = c("white"),
                                     #linetype = "solid",
-                                    color = "black",
-                                    linewidth = 1)) +
+                                    color = "white",
+                                    linewidth = 0.2)) +
   # place legend on bottom
   #theme(legend.position = "bottom") +
   # or remove the legend
@@ -719,11 +720,114 @@ if(bSaveFigures==T){
          #width=210*0.64,height=297,
          #width=210*0.8,height=297,
          #width=210,height=297,
-         width=210,height=0.70*297,
-         #width=297,height=210,
+         #width=210,height=0.70*297,
+         width=297,height=210,
          #width=1.4*297,height=210,
          units="mm",dpi=300)
 }
+
+
+library(ggplot2)
+#make plot
+p05 <- ggplot(data = world) +
+  geom_sf(color = "black", fill = "azure3", lwd=0.1, stroke=0.1) +
+  # also see: https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/
+  theme_void() +
+  # plot all points with crosses, to show were sampling was performed
+  # NOTE that this part that plots the crosses as placed first, so that 
+  # the next layers with numbered points are placed on top, and will cover
+  #dfg05$yer_ssn2
+  # the crosses
+  geom_point(data=dfg05, 
+             aes( x =declon, 
+                  y = declat),
+             shape=3) +
+  # add points for sampled locations with the number of of organisms found
+  # on the location, NOTE that the variable needs to be modified with
+  # 'as.factor()' 
+  # see this question : https://stackoverflow.com/questions/43359050/error-continuous-value-supplied-to-discrete-scale-in-default-data-set-example
+  geom_point(data= dfg07.01,
+             aes( x=declon,
+                  y=declat,
+                  fill=as.factor(orgFnd2_soF2)),
+             shape= 21,
+             stroke = 0.1,
+             size=3.2) +
+  # use the color range prepared above
+  # scale_fill_manual(values = alpha(c(CLscl),0.8)) +
+  scale_fill_manual(values = c(CLscl)) +
+  # add text labels on the point 
+  geom_text(data= dfg07.01, 
+            aes( x=declon,
+                 y=declat,
+                 label=orgFnd2_soF2),
+            size=1.8) +
+  #Arrange in facets
+  # ggplot2::facet_wrap( ~ yer_ssn,
+  #                      drop=FALSE,
+  #                      dir="h",
+  #                      ncol = 2,
+  #                      labeller = label_bquote(cols =
+  #                                                italic(.(as.character(yer_ssn))))  ) +
+  # 
+  ggplot2::facet_wrap( ~ yer_ssn2,
+                       drop=FALSE, nrow = 2,
+                       dir="v") +
+  
+  # # see : https://r-charts.com/ggplot2/facets/
+  theme(strip.text = element_text(#face = "bold",
+    color = "black",
+    hjust = 0,
+    size = 8),
+    strip.background = element_rect(fill = c("white"),
+                                    #linetype = "solid",
+                                    color = "white",
+                                    linewidth = 0.2)) +
+  # place legend on bottom
+  theme(legend.position = "bottom") +
+  # or remove the legend
+  #theme(legend.position = "none") +
+  #define limits of the plot 
+  ggplot2::coord_sf(xlim = c(6.6, 17.2),
+                    ylim = c(54.2, 58.4), 
+                    expand = FALSE) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  # or remove them all completely
+  #http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()) 
+#change axis labels
+#p05t <- p05 + xlab("longitude") + ylab("latitude")
+p05t <- p05 + xlab("længdegrad") + ylab("breddegrad")
+p05t <- p05 + xlab(" ") + ylab(" ")
+#change the header for the legend on the side, 
+#this must be done for both 'fill', 'color' and 'shape', to avoid 
+#getting separate legends
+p05t <- p05t + labs(color='')
+p05t <- p05t + labs(fill='Antal NIS', ,nrow=1)
+p05t <- p05t + labs(shape='')
+p05t <- p05t + labs(size='')
+# https://github.com/tidyverse/ggplot2/issues/3492
+#adjust tick marks on axis
+p05t <- p05t + scale_y_continuous(breaks=seq(54.0, 58.4,1))
+p05t <- p05t + scale_x_continuous(breaks=seq(6.0, 17.2,2.0))
+# see the plot
+p05t
+bSaveFigures<-T
+if(bSaveFigures==T){
+  ggsave(plot = p05t, 
+         filename = paste0(wd00_wd06,"/Fig05_v05_map_of_NIS_detected_2017_to_2023.png"),
+         #width=210*0.64,height=297,
+         #width=210*0.8,height=297,
+         #width=210,height=297,
+         #width=210,height=0.70*297,
+         width=297,height=210*0.35,
+         #width=1.4*297,height=210,
+         units="mm",dpi=300)
+}
+
 
 dfg05_2017_2020 <- dfg05[grepl("2017|2018|2019|2020",dfg05$yer_ssn),]
 dfg07.01_2017_2020 <- dfg07.01[grepl("2017|2018|2019|2020",dfg07.01$yer_ssn),]
